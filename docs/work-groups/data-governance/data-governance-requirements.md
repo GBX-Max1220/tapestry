@@ -1,14 +1,14 @@
 # Data Governance Requirements
 
-| Field       | Value                  |
-| :---------- | :--------------------- |
-| Status      | Draft                  |
-| Confidence  | Medium (3/5)           |
-| Created     | June 27, 2026          |
-| Last Update | September 14, 2026     |
-| Versions    | V0.2 - September 14, 2026 |
+| Field       | Value                       |
+| :---------- | :-------------------------- |
+| Status      | Draft                       |
+| Confidence  | Medium (3/5)                |
+| Created     | June 27, 2026               |
+| Last Update | September 14, 2026          |
+| Versions    | V0.1.1 - September 14, 2026 |
 
-This document supports issue [#231](https://github.com/The-AI-Alliance/tapestry/issues/231) by defining the second iteration ("V0.2") of the data governance requirements for datasets used in Tapestry training, tuning, alignment, and evaluation work. It focuses on the decisions and evidence required before data is used, while it is in use, and when its use must stop.
+This document supports issue [#231](https://github.com/The-AI-Alliance/tapestry/issues/231) by defining contributing to the second iteration ("V0.2") of the data governance requirements for datasets used in Tapestry training, tuning, alignment, and evaluation work. It provides further clarification on the Tapestry requirements to enable the use of datasets with various constraints on permissible use.
 
 The core requirement is simple: Tapestry needs to know what data exists, who can use it, where it may reside, what processing has happened to it, and what evidence can be shared without violating participant sovereignty.
 
@@ -51,9 +51,9 @@ These modes should be enforceable through both policy and workflow design. For e
 
 ### Classification and approval
 
-Every dataset and derived artifact must have one accountable steward and one recorded contribution/usage category. The steward may propose a category, but use in a pipeline requires approval from the authority named by the participant or consortium policy. When metadata is incomplete or controls disagree, the most restrictive applicable category wins until the conflict is resolved.
+Every dataset and derived artifact must have one accountable steward and one or more recorded contribution/usage category. The steward may propose a category, but use in a pipeline requires approval from the authority named by the participant or consortium policy. When metadata is incomplete or controls disagree, the most restrictive applicable category wins until the conflict is resolved.
 
-Approval is specific to an artifact version, purpose, processing location, and time window. Approval for evaluation does not imply approval for training, and approval for one model program does not automatically carry to another. Emergency exceptions must identify the approving authority, expiry, reason, and compensating controls; an exception may never waive a legal or contractual prohibition.
+Approval is specific to an artifact version, purpose, processing location, and time window. A new version require a new approval. Approval for evaluation does not imply approval for training, and approval for one model program does not automatically carry to another. Emergency exceptions must identify the approving authority, expiry, reason, and compensating controls; an exception may never waive a legal or contractual prohibition.
 
 ### Derived artifacts
 
