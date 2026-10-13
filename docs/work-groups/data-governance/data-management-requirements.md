@@ -92,14 +92,14 @@ The result must use stable reason codes suitable for automated gates. Human-read
 
 Every accepted or denied access request and every processing transition must record:
 
-- event identifier and timestamp;
-- authenticated actor, service, and participant boundary;
-- action and outcome, including stable reason codes;
-- artifact identifier and immutable version, subject to visibility rules;
-- purpose, processing location, and policy version;
-- approval or exception reference, when applicable;
-- job identifier and parent/output artifact links for transformations; and
-- integrity evidence for the event, such as a digest or signed envelope.
+- Event identifier and timestamp;
+- Authenticated actor, service, and participant boundary;
+- Action and outcome, including stable reason codes;
+- Artifact identifier and immutable version, subject to visibility rules;
+- Purpose, processing location, and policy version;
+- Approval or exception reference, when applicable;
+- Job identifier and parent/output artifact links for transformations; and
+- Integrity evidence for the event, such as a digest or signed envelope.
 
 Events are append-only. Corrections create a new event that references the superseded record rather than silently replacing history.
 

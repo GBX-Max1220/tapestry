@@ -16,7 +16,7 @@ From these governance requirements, [Data Management Requirements](data-manageme
 
 ## Scope of This Document
 
-### In scope:
+### In Scope:
 
 - Definitions of dataset contribution/usage categories, including  metadata such as provenance, lineage, licensing, consent, and allowed-usage constraints.
 - Residency and sovereignty requirements that downstream training and evaluation must respect.
@@ -49,17 +49,17 @@ The infrastructure should support four broad participation modes:
 
 These modes should be enforceable through both policy and workflow design. For example, the setup process for a training job should explicitly control which datasets are to be used, based for example on restriction criteria, target use cases (e.g., for domain-specific, tuned models), etc. This governance should be transparent to the training process itself, except for general requirements to track data usage, etc.
 
-### Classification and approval
+### Classification and Approval
 
 Every dataset and derived artifact must have one accountable steward and one or more recorded contribution/usage category. The steward may propose a category, but use in a pipeline requires approval from the authority named by the participant or consortium policy. When metadata is incomplete or controls disagree, the most restrictive applicable category wins until the conflict is resolved.
 
 Approval is specific to an artifact version, purpose, processing location, and time window. A new version require a new approval. Approval for evaluation does not imply approval for training, and approval for one model program does not automatically carry to another. Emergency exceptions must identify the approving authority, expiry, reason, and compensating controls; an exception may never waive a legal or contractual prohibition.
 
-### Derived artifacts
+### Derived Artifacts
 
 A transformation does not erase the obligations attached to its inputs. Derived datasets, checkpoints, embeddings, statistics, and evaluation outputs inherit every applicable restriction unless a documented review establishes that a restriction no longer applies. When inputs have different restrictions, the output receives their combined restrictions. A less restrictive classification requires explicit approval and evidence supporting the change.
 
-### Withdrawal and deletion
+### Withdrawal and Deletion
 
 The system must support stopping future use of an artifact without rewriting historical audit evidence. A withdrawal record must identify the affected artifact versions, effective time, reason, authority, and required response. The response may include blocking new jobs, cancelling active jobs, quarantining outputs, deleting permitted copies, or starting a model-impact review.
 
@@ -116,13 +116,13 @@ Most of these requirements require further details to be defined.
 
 Before a job may consume an artifact, the governance record must establish:
 
-- the immutable artifact version or content digest;
-- the steward and approving authority;
-- the approved purpose, location, and time window;
-- the contribution/usage category and applicable restrictions;
-- the source and transformation lineage available at the artifact's visibility tier;
-- the review status for rights, consent, residency, retention, and prohibited uses; and
-- the action to take if the artifact is withdrawn while the job is active.
+- The immutable artifact version or content digest;
+- The steward and approving authority;
+- The approved purpose, location, and time window;
+- The contribution/usage category and applicable restrictions;
+- The source and transformation lineage available at the artifact's visibility tier;
+- The review status for rights, consent, residency, retention, and prohibited uses; and
+- The action to take if the artifact is withdrawn while the job is active.
 
 A missing required field is a blocker. A field that is not applicable must state why rather than being left blank.
 
