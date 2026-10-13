@@ -274,10 +274,18 @@ class _ClaimsAnotherDevice(torch.Tensor):
     still runs on real values.
     """
 
+    # Note: In a Python version between 3.12.8 and 3.12.14, the following started
+    # throwing a ty error "Read-only attribute overrides a writable attribute".
+    # It's BAD when a patch release changes behavior like this! Anyway, the fix is
+    # the device setter method I added afterwards -- Dean Wampler.
     @property
     def device(self) -> torch.device:
         """Pretend to live on a GPU."""
         return torch.device("cuda", 0)
+
+    @device.setter
+    def device(self, value: torch.device) -> None:
+        self.device = value
 
 
 def test_device_mismatch_is_reported_and_the_tensor_is_still_measured() -> None:
