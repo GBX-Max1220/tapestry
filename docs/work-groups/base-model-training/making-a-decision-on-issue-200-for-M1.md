@@ -1,0 +1,379 @@
+# Making a Decision on #200: the M1 Domain-specific Model to Build
+
+Dean Wampler, September 21, 2026
+
+I have attempted to organize and summarize the discussion in [#200](https://github.com/The-AI-Alliance/tapestry/issues/200), along with some additional points to help us close on a decision soon. I have attempted to paraphrase the issue comments accurately. Let me know of any omissions or misrepresentations.
+
+## TL;DR
+
+* The M1 model goals promote the core valuation proposition of Tapestry, including consortium training, responsible use of protected data, and cultural alignment.
+* The M1 model should be uniquely useful, even though time and resources preclude it being a comprehensive solution for the target domain.
+* Of the possible target domains, healthcare is an appealing choice because of the protected data challenges, although meeting them in M1 would be difficult.
+* No matter the choice made, we need to identify specific use cases to target, corresponding training and tuning data, domain experts for validation, and automated evaluations for ensuring efficacy.
+* Two detailed healthcare use cases have been proposed, [A Better Healthcare Model for Spreading Tropical Diseases](#proposal-1) and [A Better Healthcare Model for Local Conditions](#proposal-2), plus a more generic use case, [A "Hyper-local" Workflow Model](#proposal-3). Variations of these proposals were also suggested.
+* A concrete cybersecurity use case was also proposed, [Collaborative Threat Intelligence Across Organizational Boundaries](#collaborative-threat-intelligence-across-organizational-boundaries).
+* There are pros and cons to making a decision right now:
+	* **Pros:** The sooner we decide, the sooner we can begin the preliminary work, like lining up the data sources and domain experts we need. Also, it can be frustrating to keep debating a decision.
+	* **Cons:** Since we don't have the compute resources yet that we need, we can't start tuning yet anyway.
+
+## Goals
+
+The M1 model should demonstrate some of the core value claims of Tapestry, at small and doable scale, and provide enough utility and novelty that it attracts more people and resources into our project. Here are five suggested goals:
+
+1. Trained on N >= 3 sovereign nodes (even if one node does most of the work), using continued pre-training and/or post-training on an existing open weight base model.
+2. Uses some protected data for training, or at least some data stays local to each sovereign node with only weights & metadata shared back and forth.
+3. Addresses a culturally-informed set of tasks (use cases), e.g. local languages/cultural alignment + specific health, legal or finance domain tasks from several user sources. This demonstrates the importance of sovereign-aligned and owned intelligence, not just a domain benchmark winner.
+4. (stretch goal) Demonstrate at least one example private derivative created with the same open source platform; the weights are not shared back.
+5. (stretch goal) Reflects feedback and validation from real-world domain experts. They should be a third party, neither Tapestry nor goal 4.
+
+Out of scope for M1:
+* Large scale model (greater than a few ~10Bs parameters)
+* Production readiness
+* Support for model-level anti-memorization of protected data and other privacy guarantees.
+
+## Requirements
+
+* **Uniquely Useful:** Meaning it provides leading capability in a specific domain, rather than a general purpose model.
+* **Public Recipes:** For customization, e.g., tuning, and deployment, which would enable local/sovereign alignment and use.
+* **Targeted Evaluations:** Verification and known limitations to ensure trust.
+* **Provenance Documentation:** The base model and data sets were used responsibly.
+* **Sized Appropriately:** Large enough to be effective. Small enough to be doable.
+* **Built on an ideal Base Model:** Discussed in [#210](https://github.com/The-AI-Alliance/tapestry/issues/210).
+* **Artifacts Released:**
+	1. Open weight model, Apache 2.0 license. (Base model must be license compatible.)
+	2. At least one demo, not production ready.
+	3. Research papers, white papers, blog posts, etc.
+	4. Open-source training platform for the whole work flow.
+
+#200 comment links feeding these requirements: [1,3](#comment-links))
+
+## Several Suggestions Were Made
+
+* A model that supports a specific under-served language. (comment links: [2](#comment-links))
+	* For example, Vietnamese, native Indian languages and dialects, Thai.
+* A domain-specific model for the following possible domains:
+	* Finance (links: [1-2](#comment-links))
+		* For example, fraud detection.
+	* Healthcare (links: [6-8](#comment-links))
+	* Cybersecurity (links: [12](#comment-links))
+	* Education (links: [1-2](#comment-links))
+		* Generally good for teaching and culturally aligned.
+	* Government and public service (links: [2](#comment-links))
+		* For example, a model could specialize in searching and analyzing local government news and helping users understand policy documents, navigate forms, and access public services.
+	* Industrial (links: [1](#comment-links))
+		* Past examples built by Alliance members include [SemiKong](https://arxiv.org/abs/2411.13802) and [Llamarine](https://arxiv.org/abs/2503.00203).
+
+While we have to pick one target domain and set of use cases, due to resource limitations, if we have interested experts in other domains, they can lay the groundwork for subsequent models in their domains.
+
+A separate _dimension_ is how much the domain model is culturally aligned and specific vs. independent of those concerns.
+
+### What We Need
+
+For the target domain, we need to identify the following:
+
+* The domain subset of interest.
+    * E.g., in healthcare, do we focus on patient records, provider assistance (e.g., notes transcription), ...?
+* The use cases we want to improve.
+    * This will determine what custom evaluations we write to verify our work.
+    * This is also where domain expertise will be essential.
+* Catalog data sets for post training.
+    * Public, with no restrictions.
+    * Protected, with clearly-described restrictions. For M1, our planned data infrastructure most likely won't be ready to support protected data.
+    * Synthetic data
+* Evaluations we need
+    * What _acceptance criteria_ would end users expect in order to be willing to use the model?
+
+(links: [9](#comment-links))
+
+## Example Detailed Use Cases for Healthcare
+
+Several detailed use cases were subsequently suggested in healthcare as possible targets, or at least they had the goal of stimulating discussion on specific, non-trivial, yet tractable problems to address. One of the use cases discussed next targets healthcare, but it is easily generalized to other domains.
+
+Healthcare is an appealing target because it is _difficult_. It has significant data privacy requirements, but if Tapestry can meet them while utilizing that data responsibly, it would provide a major step forward in responsible AI.
+
+### Kinds of Healthcare Data
+
+* **Patient/EHR Data:** Electronic health record data requires rigorous management to meet PII and other regulatory requirements. In the near term (M1 and beyond), using differential privacy to extract only demographic data, without any identifying information, is a good place to start first.
+* **Institutional Proprietary Data:**
+* **Literature and public clinical QA data sets:** E.g., MedQuAD. carry essentially none of the risks carried by real patient data.
+* **Synthetic and anonymized real data:** Good stand-ins for protected data, like EHRs, if created reliably.
+
+(links: [4-5](#comment-links))
+
+<a id="proposal-1"></a>
+
+### Proposal 1: A Better Healthcare Model for Spreading Tropical Diseases
+
+#### Problem Statement
+
+Due to global warming and highly mobile people and commerce, tropical diseases endemic to warmer parts of Africa, Asia, and the Americas are spreading into new areas, even across ocean boundaries. Healthcare practitioners in the new areas are often ill prepared to diagnose occurrences of these diseases, and these diseases are poorly represented in AI models they are currently using for assistance (a claim that needs to be verified...).
+
+#### Solution
+
+Adapt (using a combination of CPT, SFT, and RL) an existing model, possibly a healthcare model like [MedGemma](https://deepmind.google/models/gemma/medgemma/), or a generic base model to be better at matching symptoms to tropical diseases.
+
+If the endemic regions have extensive records of occurrences of these disease, use these data sets for adaption. Notes:
+
+* Non-PII data: e.g., government statistics about demographics, symptoms, locations, etc. Unlikely to be restricted in any way, but they may already be "scraped" by data aggregators. If they are not already used in model training, e.g., because they have some _friction_ for access, then they are more beneficial to us.
+* Sovereign and PII data: Use differential privacy to extract and use the same kinds of statistical information with no PII leakage.
+
+#### Advantages
+
+* A focused, tangible solution for M1.
+* The spread of tropical diseases is a growing, widely-recognized problem.
+* Any sovereign data sets could be used for training by the corresponding local sovereign node.
+* We have a possible source of patient data from a set of charity hospitals in India through ClinicaMind, an Alliance member organization. Some unanswered questions:
+    * What IRB/ethics review is needed to access this data, if any has been done already?
+    * Is the data already de-identified/anonymized, or would that need to happen as part of our pipeline?
+    * What kind of data would this actually be, structured fields (diagnosis codes, demographics, lab values), unstructured clinical notes, or both? That changes both the governance requirements and the technical approach significantly.
+* The solution does not require significant instruction or agent training, because prompting with responses will be the dominant modality, not workflows. Hence, the use case is an easier improvement to make to a model.
+* Supports text-only or multi-modal enhancement.
+
+#### Disadvantages
+
+* Is the assumption valid that existing models are poor tools? This question needs confirmation.
+* Gaining access to any healthcare related data sets will be challenging, in part due to natural caution by owners of such data.
+* Generating synthetic data for this use case won't be feasible.
+
+#### Variations
+
+* Pick one or two specific diseases.
+* Pick one or two specific specialties.
+
+(links: [6](#comment-links))
+
+<a id="proposal-2"></a>
+
+### Proposal 2: A Better Healthcare Model for Local Conditions
+
+#### Problem
+
+General-purpose models, including those tuned for a domain like healthcare, will likely be poor at local cultural awareness, including:
+
+* Local languages
+* Local vernacular for healthcare conditions
+* Local cultural sensitivities, e.g., related to gender, certain diseases and causes, etc.
+* Local disease demographics and their impacts, e.g., smoking and air pollution are more common, and therefore more impactful, in some places vs. others.
+* Local laws and regulations
+
+#### Solution
+
+Adapt (using a combination of CPT, SFT, and RL) an existing healthcare model like [MedGemma](https://deepmind.google/models/gemma/medgemma/) to be better culturally aligned for one target culture.
+
+Find local data sets that reflect these cultural norms. The same _notes_ apply here that were listed in Proposal 1 above.
+
+We have received information about two potential data sets already.
+
+One is from a set of charity hospitals in India, connected to us through AI Alliance member company, ClinicaMind. This data may already be cleaned and suitable for use, solving a major responsible use concern.
+
+The second potential data source is DATAI (University of Navarra) and its affiliated hospital (CUN), suggested by Rubén Armañanzas, who is affiliated with both. Rubén made the following specific specific suggestions (link: [11](#comment-links)):
+
+**Task:** extracting diagnoses from Spanish clinical notes and assigning ICD-10 codes. Clinical Spanish is underrepresented in medical LLM training, and coding has external ground truth, which complements QA-style evaluation.
+
+**Fit with the goals:** Spain would add a second culture alongside India (goal 3). CUN is a natural candidate for the private derivative (goal 4) once governance and ethics approvals allow. We are not proposing to use real records in M1.
+
+**What we can contribute now, with public or synthetic data only:**
+1. **Benchmark:** a synthetic Spanish clinical set covering about 91% of ICD-10-CM categories (paper forthcoming). It was generated through a commercial LLM API whose terms rule out training on it, so it is for evaluation only.
+2. **Evidence on the gap:** Spanish clinical encoders at roughly 0.8 micro F1 on CodiEsp drop to roughly 0.2 on this set. We can run MedGemma and the #210 candidates on both.
+3. **Training data recipe:** synthetic data is feasible for records tasks. We propose regenerating an equivalent corpus with a permissively licensed open-weight model, with full provenance, as releasable training data.
+4. **Evaluation:** calibrated abstention and risk-coverage analysis as acceptance criteria (happy to help in #204). CUN clinicians could review a random sample of outputs, given their time constraints.
+
+#### Advantages
+
+* A focused, tangible solution for M1.
+* Very well aligned to a Tapestry core goal, which is better tools and models for cultural alignment.
+* Local healthcare providers may find the gap described negatively impacts their work (true??).
+* We have at least two potential sources of relevant data, discussed above.
+* Any sovereign data sets could be used for training by the corresponding local sovereign node.
+* An _initial_ solution does not require significant instruction or agent training, because prompting with responses will be a good modality to target first, saving  workflows and agent scenarios for later.
+* Primarily text-only.
+
+#### Disadvantages
+
+* Is the assumption valid that existing models are poorly aligned culturally? Do local healthcare providers perceive a problem? These questions need confirmation.
+* Gaining access to any healthcare related data sets will be challenging, in part due to natural caution by owners of such data.
+* Generating synthetic data for this use case won't be feasible.
+* If the definition of "local" is _all of India_ for example, that would be an enormous amount of diversity to cover. Near term, we would probably pick one region and its one, most-common language.
+
+#### Variations
+
+* Pick one or two specific diseases.
+* Pick one or two specific specialties.
+
+(links: [6](#comment-links))
+
+
+<a id="proposal-3"></a>
+
+### Proposal 3: A "Hyper-local" Workflow Model
+
+#### Problem
+
+This idea was suggested in a conversation between Dean Wampler by David Sarabia, the CEO and founder of ClinicaMind, a healthcare AI company. David said that one of the biggest challenges for clinics is improving the efficiency of their highly-customized workflows. The example he used is a neurologist who specializes in migraines. There are general-purpose workflows available for diagnosing and treating general neurology presentations, but a specialist will often want to skip steps that are not relevant to the specialty or the clinic's optimized workflow. A related problem is extracting just the information the provider needs, e.g., right before seeing a patient and having just a few minutes to refresh his or her memory about the patient's history. All the information is available, but often in formats and behind UIs that are slow and tedious to use.
+
+Hence, a real benefit in healthcare would be an AI system that is easy to customize for local, optimized work flows. Of course, this would not be limited to healthcare, as many professions have similar needs. For this to be effective, it would be necessary for the system to be able to learn by observing users at work, refined with natural language instructions, and no AI expertise required.
+
+#### Solution
+
+Adapt (using a combination of CPT, SFT, and RL) an existing model that is good at reasoning and instruction following. It is not certain that the model chosen needs to be already tuned for the domain, like healthcare, although this should be investigated.
+
+#### Advantages
+
+* A focused, tangible, yet very generalizable solution for M1.
+* Very well aligned to a Tapestry core goal, which is better tools and models for non-AI specialists to easily adopt AI to their specific, local conditions and requirements.
+* We have validation from a healthcare industry expert that this is widespread need for healthcare providers.
+* The training work could be done completely with synthetic data.
+* ClinicaMind may have neurology clinic customers who would be willing to use the system to create a local, working implementation, goal #4 in [Goals](#goals) above.
+* Because this would be a human-driven tool that automates time-consuming productivity steps, it would be a relatively safe use of AI in a healthcare setting.
+
+#### Disadvantages
+
+* Even an _initial_ solution requires significant instruction following and reasoning capabilities.
+* Even an _initial_ solution requires agent integration for interacting with EHR and other systems, etc.
+* A multimodal model may be necessary to be truly effective.
+* Even if one or more clinics are willing to try the system, it may take too long to implement for our M1 time frame.
+* While using synthetic data and "fake" EHR systems are sufficient for our training needs, ensuring they accurately represent real data and systems is not trivial.
+
+#### Variations
+
+* Pick another domain workflow.
+
+
+### Generalizations and Other Ideas for Healthcare
+
+The first two use cases above were inspired by the next two, more-general suggestions made earlier in the #200 discussion. The third use case above was suggested in a more recent conversation (as described above).
+
+#### Tune an Open Healthcare-oriented Model to Improve Its Cultural Alignment for 1+ Cultures
+
+For example, use MedGemma. Measure if the resulting model appears better for culturally-relevant medical use cases, even without any additional healthcare-specific tuning. Some possible examples:
+
+* The tuned model is better informed about diseases that are more common in that culture than globally (e.g., certain infectious diseases more prevalent in warmer climates).
+* The tuned model is more aware of the most likely local diagnoses for particular symptoms (e.g., a chronic cough is more likely to be a symptom of X in this area).
+* The tuned model is more aware of the most likely local causes for a particular disease, vs. global cause percentages (e.g., smoking is more common in some areas than others).
+* The tuned model better understands local, common "vernacular" for medical terms.
+* The tuned model is more effective at summarizing a provider's notes into language and vernacular that patients can understand.
+
+Data considerations: What data sources are best for this alignment, e.g., public epidemiological databases and regional health surveillance data, versus institution-specific records? That distinction matters for both feasibility and for how we would want to validate the results (public epidemiological data would need to stay current given regional disease prevalence shifts, while institutional data would need de-identification and independent review board (IRB) review, depending on the source.
+
+(links: [7-8](#comment-links))
+
+#### Tune an Open Healthcare-oriented Model to Improve Its Utility at Analyzing Healthcare Records
+
+For example, use MedGemma. Measure if the resulting model appears better for analyzing healthcare records, possibly in these areas:
+
+* For finding errors and suggesting corrections (e.g., different classification/billing codes are used vs. those that correspond to the diagnosis and tests ordered).
+* For translating provider notes into records (e.g., finding the right classification/billing codes automatically based on the notes).
+* For finding potential related tests or conditions to consider based on the patient's records. (hard..., but this is an area where differential privacy could be very impactful, as the training mostly needs trends, statistical correlations, and non-PII data, like age, gender, and approx. geographical location).
+* For translating between different record standards or proprietary formats.
+
+Data considerations: If the record analysis and related-test suggestion tuning draws on real institutional records (even aggregated/statistical, as noted for differential privacy), that would need IRB approval at the collaborating institution. Given the concerns about the M1 timeline, it might be worth clarifying up front which of these use cases assumes real patient records (even anonymized) versus synthetic/public data only, since that changes the approval timeline substantially.
+
+(links: [7-8](#comment-links))
+
+## Example Detailed Use Cases for Other Domains
+
+A detailed cybersecurity use case was also proposed:
+
+### Collaborative Threat Intelligence Across Organizational Boundaries
+
+Each organization typically runs a locally trained model on local incidents. The use case of federated learning (FL) is to generalize a single model to acquire knowledge about attack patterns that occur elsewhere. Due to jurisdictional data privacy requirements (e.g. GDPR) and the protection of trade secrets, it's unlikely that datasets can go to a centralized model for training. The opposite is likely to be true: a model that goes to the datasets in distributed locations and return to center with new capabilities. FL has a strong use case in preserving these requirements while gaining the desired capabilities.
+
+#### Solution
+
+Train a shared intrusion-/anomaly-detection model across a federation of sovereign nodes using FL, so raw logs never leave the node. Each node trains locally on its own telemetry and contributes only encrypted model updates. A federated aggregator combines them into a global model that every node pulls back down.
+
+#### Advantages
+
+- Strong native fit for Tapestry, re: federated sovereign node architecture.
+- A focused, tangible M1 target: intrusion/anomaly detection is a well-scoped supervised (or semi-supervised) classification task, not an open-ended agent/workflow problem.
+- Dataset availability: public, labeled intrusion datasets are downloadable today, so we can prototype the full loop before negotiating access to any partner's real logs.
+
+#### Disadvantages
+
+- FL introduces its own attack surface: model-inversion / gradient leakage, membership inference, colluding nodes, and update/model poisoning (including backdoors).
+- The privacy-utility cost is non-trivial and must be tuned.
+- Synthetic datasets have limited credibility. For further stages, real partner data will be required.
+
+#### Sample Experiment Design
+
+- Goal: measure whether FL across N simulated nodes beats N independent local models on intrusion detection, and quantify the accuracy cost of each privacy tier.
+- Data: start from public, labeled intrusion datasets. Partition into shards across a number of nodes, giving each node a skewed attack type mix to introduce regional asymmetry.
+- Task and Model: binary detection first, then multi-class attack-type; a single small shared architecture across nodes as nodes stay comparable.
+- Comparison Conditions: (1) per-node local-only baseline, (2) centralized "pool all data" upper bound, (3) basic FedAvg. etc.
+- Metrics: detection metrics, privacy, communication cost, latency, etc.
+- Adversarial probe: inject 1-2 poisoning / backdoor nodes and a gradient-inversion attacker. Check whether robust aggregation holds up.
+- Success criteria: FL lands within a few points of the centralized upper bound and clearly above local-only, at a privacy tier whose measured leakage sits below an agreed threshold.
+
+#### References:
+
+- [Federated Learning in Cybersecurity: Privacy-PreservingCollaborative Models for Threat IntelligenceAcrossGeopolitically Sensitive Organizational Boundaries](https://ijarpr.com/uploads/V2ISSUE7/IJARPR0712.pdf?v=2)
+- [Federated Learning-Driven Cybersecurity Framework for IoT Networks with PrivacyPreserving and Real-Time Threat Detection Capabilities](https://arxiv.org/pdf/2502.10599)
+- [Federated Learning for Cybersecurity: A Privacy-Preserving Approach](https://www.mdpi.com/2076-3417/15/12/6878)
+
+(link: [12](#comment-links))
+
+### Industrial Operations: Maintenance, Troubleshooting, Operating Procedures and Technical Knowledge
+
+One additional angle for the Industrial AI Model option could be a sovereign model focused on industrial operations: maintenance, troubleshooting, operating procedures and technical knowledge.
+
+Pascal Gautier is currently developing `OrchestrAI` at Pascal Robotics, an orchestration layer designed to route AI workloads between cloud, local and on-premise execution according to cost, latency, quality and sovereignty constraints.
+
+What makes the industrial use case interesting for Tapestry is that much of the valuable data — maintenance logs, local procedures, machine documentation, incident history, production knowledge — is proprietary and often cannot reasonably be centralized.
+
+A Tapestry-style sovereign node architecture could therefore be particularly relevant: each industrial site could adapt a shared base using local data while retaining control of its raw datasets.
+
+For an initial M1-scale experiment, the scope could remain deliberately modest and text-first:
+- industrial troubleshooting / maintenance assistance;
+- grounding in technical procedures and documentation;
+- multilingual industrial knowledge;
+- evaluation of task quality together with provenance and sovereignty constraints.
+
+Private industrial data would not be necessary for the first PoC; public or synthetic datasets could establish the pipeline first. Longer term, this could naturally connect to digital twins and Physical AI, but I would keep those outside the first experiment.
+
+Pascal offered to contribute a small use-case / evaluation specification if this direction is useful to the group.
+
+(link: [13](#comment-links))
+
+## Notes on the Implementation Approach
+
+So far, we have assumed we would create a tuned model with some combination of continued pretraining and post training with supervised fine tuning and reinforcement learning. There are some alternative approaches that have been suggested, taking a more application-level approach.
+
+### Federated learning over RAGs
+
+*Federated learning over RAGs* is an attractive option if we want to focus on post-training:
+
+- Flower.ai has already looked into this use case: [https://flower.ai/docs/examples/fedrag.html](https://flower.ai/docs/examples/fedrag.html)
+- [https://github.com/rui-ye/FedLLM-Bench](https://github.com/rui-ye/FedLLM-Bench)
+
+(links: [10](#comment-links))
+
+## When Do We Need to Decide?
+
+Do we need to decide now?
+
+**No:**
+
+* Since we do not currently have the compute resources that we need, we can't start tuning yet, so we can take some more time to decide on a target.
+
+**Yes:**
+
+* The sooner we decide, the sooner we can begin necessary preliminary work, like lining up the data sources and domain experts we need.
+* It can be frustrating to keep discussing an idea and not moving to a decision...
+
+## Comment Links:
+
+The links above refer to these items, which are links to the actual comments in issue 200.
+
+1. [Initial description from Anthony Annunziata](https://github.com/The-AI-Alliance/tapestry/issues/200#issue-4989842561)
+2. [Comment from Hunter Hector](https://github.com/The-AI-Alliance/tapestry/issues/200#issuecomment-5547216421)
+3. [Comment from Anthony](https://github.com/The-AI-Alliance/tapestry/issues/200#issuecomment-5602252840)
+4. [Comment from Anisha Kumar](https://github.com/The-AI-Alliance/tapestry/issues/200#issuecomment-5621541236)
+5. [Comment from Anthony](https://github.com/The-AI-Alliance/tapestry/issues/200#issuecomment-5634487429)
+6. [Comment from Dean](https://github.com/The-AI-Alliance/tapestry/issues/200#issuecomment-5686038881)
+7. [Comment from Dean Wampler](https://github.com/The-AI-Alliance/tapestry/issues/200#issuecomment-5637408580)
+8. [Comment from Anisha](https://github.com/The-AI-Alliance/tapestry/issues/200#issuecomment-5647864200)
+9. [Comment from Dean](https://github.com/The-AI-Alliance/tapestry/issues/200#issuecomment-5680219673)
+10. [Comment from Maneesh](https://github.com/The-AI-Alliance/tapestry/issues/200#issuecomment-5778810910)
+11. [Comment from Rubén Armañanzas](https://github.com/The-AI-Alliance/tapestry/issues/200#issuecomment-5774346211)
+12. [Comment from Elaine Chan](https://github.com/The-AI-Alliance/tapestry/issues/200#issuecomment-5778998091)
+13: [Comment by Pascal Gautier](https://github.com/The-AI-Alliance/tapestry/issues/200#issuecomment-5930442599)

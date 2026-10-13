@@ -8,6 +8,8 @@ For our purposes, _data_ also includes artifacts like model weights and delivera
 
 [Data Governance Requirements](data-governance-requirements.md) explores the details.
 
+The [Open Data Spaces assessment](open-data-spaces-assessment.md) evaluates a standards-based interoperability option for implementing these requirements and recommends a bounded prototype before adopting its middleware.
+
 > [!NOTE]
 > When considering how to implement governance requirements, _derived requirements_ for data management emerge that focus on architecture, design, and implementation details. _We consider these requirements the responsibility of the [Infrastructure & Operations](../infrastructure-operations/) work group._
 >
@@ -29,9 +31,15 @@ This work group traces to [Phase 2 pain points](../../architecture/2-pain-points
 - [Data governance requirements](data-governance-requirements.md), including coverage of:
     - A data-tier taxonomy for Tapestry participants.
 	- A list of blocked-data scenarios where raw data must never leave a sovereign boundary (including through model memorization!).
+	- Mapping to a _shared responsibility model_. See [AI Shared Responsibility Considerations](ai-shared-responsibility-considerations.md), which contains notes on how a _responsibility model_ maps to various aspects of data management. It is proposed to refine and incorporate those concepts into the governance requirements.
+
 - Derived [data management requirements](data-management-requirements.md).
 	- A minimum dataset card template.
 	- Requirements handed to [Security & Privacy](../security-privacy/) and [Infrastructure & Operations](../infrastructure-operations/).
+
+### Other Documents Here
+
+* [AI Shared Responsibility Considerations](ai-shared-responsibility-considerations.md) contains notes on how a _responsibility model_ maps to various aspects of data management. It is proposed to incorporate those concepts into the governance requirements.
 
 ## Interfaces
 
@@ -41,4 +49,3 @@ This work group traces to [Phase 2 pain points](../../architecture/2-pain-points
 - **Evaluation & Certification:** audit evidence for data sovereignty claims.
 - **Governance & Participation:** contribution credit and benefit-sharing rules.
 - **Infrastructure & Operations:** how these requirements are implemented.
-

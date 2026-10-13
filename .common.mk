@@ -27,6 +27,7 @@
 # invocation of make, where "$$dir" will be set to the contribution's
 # directory. So, if a particular contribution has a .custom.mk file,
 # it will be found and read _for that directory only_.
+# See also the CONTRIB_* definitions and "include ${CONTRIB_TARGETS_MKS}" below.
 
 -include .custom.mk
 
@@ -49,6 +50,30 @@ CLEAN_DIRS               ?=
 CONTRIB_DIR              := contrib
 CONTRIB_DIRS             := $(patsubst %/.,%,$(wildcard ${CONTRIB_DIR}/*/.))
 CONTRIB_TARGETS_MKS      := $(foreach dir,${CONTRIB_DIRS},$(wildcard $(dir)/.targets.mk))
+CONTRIB_CUSTOM_MKS       := $(foreach dir,${CONTRIB_DIRS},$(wildcard $(dir)/.custom.mk))
+
+# Include all these .target.mk files to bring their targets into scope.
+include ${CONTRIB_TARGETS_MKS}
+
+# These targets are convenient, but also used by some tools.
+.PHONY: print-contrib-mks print-contrib-targets-mks print-contrib-custom-mks
+.PHONY: print-contrib-mks-count print-contrib-targets-mks-count print-contrib-custom-mks-count
+
+print-contrib-mks:: print-contrib-targets-mks print-contrib-custom-mks
+print-contrib-targets-mks::
+	@echo ${CONTRIB_TARGETS_MKS}
+print-contrib-custom-mks::
+	@echo ${CONTRIB_CUSTOM_MKS}
+
+print-contrib-mks-count::
+	@cntt=$(words ${CONTRIB_TARGETS_MKS}); \
+	cntc=$(words ${CONTRIB_CUSTOM_MKS}); \
+	let cnt=$$cntt+$$cntc; \
+	echo $$cnt
+print-contrib-targets-mks-count::
+	@echo $(words ${CONTRIB_TARGETS_MKS})
+print-contrib-custom-mks-count::
+	@echo $(words ${CONTRIB_CUSTOM_MKS})
 
 # The quality targets we run as part of "before-pr".
 # GITHUB_CI is set to a non-empty string in our .github/workflows/ci.yml
@@ -62,7 +87,7 @@ QUALITY_CHECKS           := ${QUALITY_CHECKS_NO_TESTS} unit-tests
 # Time execution of commands. Prefix the command invocation with "${TIME}":
 TIME                     ?= time
 
-# Common flags for "uv run" (--active is recommended by some warnings that
+# Common flags for "uv run" (--active may be useful for some warnings that
 # can be seen during recursive uv invocations, but using it can cause
 # conflicting versions of dependencies to be installed in the top-level
 # environment, if the directories for those invocations have their own
@@ -78,7 +103,7 @@ RUFF_OPT_ARGS            ?=
 TY_OPT_ARGS              ?=
 BLACK_OPT_ARGS           ?=
 
-PYLINT_ARGS              := --recursive=y --ignore=.venv --ignore-pattern='.*cache.*'
+PYLINT_ARGS              := --recursive=y --ignore=.venv --ignore-patterns='.*cache.*'
 TY_ARGS                  := check
 # Some of the *_ARGS have different settings for CI...
 ifeq (${GITHUB_CI},)
@@ -129,20 +154,22 @@ else
 endif
 
 ifndef SRC_DIR
-$(error ${ERROR} There is no ${SRC_DIR} directory! ${_END})
+$(error ${ERROR}There is no ${SRC_DIR} directory!${_END_BOLD}${_END})
 endif
 
 # When you see ${CODE}${_end} without anything between them, it is there
 # to make it easier to line up multi-line description comments.
 
 define help-message-general
-${HIGHLIGHT} Quick help for this make process: General Targets ${_END}
+${HIGHLIGHT}Quick help for this make process - General Targets:${_END_BOLD}${_END}
 
 ${CODE}make all${_END}                # Makes the ${CODE}help${_END} and ${CODE}print-info${_END} targets.
 ${CODE}make help${_END}               # Prints this output.
 ${CODE}make print-info${_END}         # Print the current values of some make and environment variables.
+${CODE}make foo-watch${_END}          # Rerun ${CODE}make foo${_END} whenever any files are changed.
+${CODE}${_END}                        # See also the custom ${CODE}*-watch${_END} targets below.
 
-${HIGHLIGHT} Working with the code: ${_END}
+${HIGHLIGHT}Working with the code:${_END_BOLD}${_END}
 
 ${CODE}make one-time-setup${_END}     # "One time setup" of ${CODE}uv${_END} dependencies (in ${CODE}.venv${_END}).
 ${CODE}make setup${_END}              # Alias for ${CODE}one-time-setup${_END}.
@@ -152,16 +179,16 @@ ${CODE}make force-setup${_END}        # Alias for ${CODE}force-one-time-setup${_
 ${CODE}make unit-tests${_END}         # Run the unit test suite.
 ${CODE}make tests${_END}              # Alias for ${CODE}unit-tests${_END}.
 ${CODE}make clean${_END}              # Remove built artifacts, temporary files, etc.
-${CODE}make format${_END}             # Format the Python code with ${CODE}black${_END}.
+${CODE}make format${_END}             # Format the Python code by making the ${CODE}black${_END} target.
 ${CODE}make black${_END}              # Alias for ${CODE}format${_END}.
 ${CODE}make lint${_END}               # Lint the Python code by making the ${CODE}ruff${_END} and ${CODE}pylint${_END} targets.
 ${CODE}make ruff${_END}               # Lint the Python code with ${CODE}ruff${_END}.
+${CODE}make ruff-watch${_END}         # Lint the Python code with ${CODE}ruff${_END} in "watch" mode, re-linting whenever files are saved.
 ${CODE}make pylint${_END}             # Lint the Python code with ${CODE}pylint${_END}.
-${CODE}make type-check${_END}         # Type check the Python code making the ${CODE}ty${_END} target.
-${CODE}make type-check-watch${_END}   # Type check the Python code with ${CODE}ty${_END} in "watch" mode,
-${CODE}${_END}                        # so you can fix mistakes and keep it updating.
+${CODE}make type-check${_END}         # Type check the Python code by making the ${CODE}ty${_END} target.
+${CODE}make type-check-watch${_END}   # Type check the Python code by making the ${CODE}ty-watch${_END} target.
 ${CODE}make ty${_END}                 # Type check the Python code with ${CODE}ty${_END}.
-${CODE}make ty-watch${_END}           # Type check the Python code with ${CODE}ty${_END} in "watch" mode.
+${CODE}make ty-watch${_END}           # Type check the Python code with ${CODE}ty${_END} in "watch" mode, re-typing whenever files are saved.
 
 ${CODE}make before-pr${_END}          # Make ${CODE}format${_END}, ${CODE}lint${_END}, ${CODE}type-check${_END}, and ${CODE}unit-tests${_END} for ${CODE}src${_END}
 ${CODE}${_END}                        # AND every ${CODE}contrib/*${_END} directory. Equivalent to ${CODE}before-pr-top${_END}
@@ -185,7 +212,7 @@ ${help-top-level-message}
 endef
 
 define help_targets_message
-${NOTE} No custom targets defined in ${CODE}${SRC_DIR}${_END}. ${_END}
+${NOTE}No custom targets defined in ${CODE}${SRC_DIR}${_END}.
 endef
 
 define no-help-for-command-message
@@ -220,9 +247,9 @@ help-command-%::
 do-help-command::
 	$(info ${${LABEL}_LABEL}Help on ${CODE}${CMD}${_END}:)
 	$(info $(if ${help-command-${CMD}-message},${help-command-${CMD}-message},${no-help-for-command-message}))
-	@true
+	@echo
 
-help-targets:: help-top-level-targets-prefix help-top-level-targets help-formal-spec contrib-custom-program-help
+help-targets:: help-top-level-targets-prefix help-top-level-targets help-formal-spec help-vendored-scripts contrib-custom-program-help
 	@true  # for some reason, this needs to be here to avoid some undesirable, extra output
 
 help-top-level-targets-prefix:
@@ -247,7 +274,7 @@ help-%::
 
 .PHONY: error
 error::
-	@$(info ${ERROR_LABEL}${MSG} (exit status = ${RED}${STATUS}${_END}))
+	@$(info ${command-failed-error-message})
 	@$(info ${${MSG_VARIABLE}})
 	@$(error )
 
@@ -271,7 +298,7 @@ silent-command-check-%:
 .PHONY: print-info-env
 print-info:: print-info-env
 print-info-env::
-	@echo "${HIGHLIGHT} Some 'environment' settings: ${_END}"
+	@echo "${HIGHLIGHT}Some 'environment' settings:${_END_BOLD}${_END}"
 	@echo
 	@echo "  ${DARK_GREEN}MAKEFLAGS:${_END}             ${CODE}${MAKEFLAGS}${_END}"
 	@echo "  ${DARK_GREEN}UNAME:${_END}                 ${CODE}${UNAME}${_END}"
@@ -310,6 +337,7 @@ print-info-env::
 #
 # The "skip-command-target-message" variable is defined in .common.mk to provide a
 # useful notice to the reader that the target is skipped.
+# TIP: Run "make skip-command-example" to see what the output looks like.
 #
 # There is one more point to explain for how this is implemented. The _default_ way
 # *-command is actually declared is as follows:
@@ -379,6 +407,7 @@ ruff-prerequisite ruff-postrequisite::
 ruff-command-default::
 	@echo "${INFO_LABEL}Target ${CODE}ruff${_END}: Running ${CODE}ruff${_END} to lint the code in ${CODE}${SRC_DIR}${_END}."
 	cd ${SRC_DIR} && ${UV_RUN} ruff ${RUFF_ARGS} ${RUFF_OPT_ARGS} .
+
 ruff-watch:: ruff-prerequisite ruff-watch-command-default ruff-postrequisite
 ruff-watch-command-default::
 	@echo "${INFO_LABEL}Target ${CODE}ruff${_END}: Running ${CODE}ruff${_END} to lint the code in ${CODE}${SRC_DIR}${_END} using 'watch' mode."
@@ -413,7 +442,7 @@ contrib-help::
 # .targets.mk, etc.
 .PHONY: contrib-audit
 contrib-audit::
-	@echo "\n${HIGHLIGHT}  Which contrib/* have the required or optional files? ${_END}"
+	@echo "\n${HIGHLIGHT}Which ${CODE}contrib/*${_END}${HIGHLIGHT} have the required or optional files?${_END_BOLD}${_END}"
 	@printf "  %-45s  ${CODE}README.md      LICENSE      .custom.mk   .targets.mk${_END}  \n" ""
 	@printf "  %-45s  ${BLUE}(required)  (recommended)  (recommended) (optional)${_END}\n" ""
 	@no="${RED}NO ${_END}"; yes="${GREEN}yes${_END}"; \
@@ -435,7 +464,7 @@ contrib-audit::
 contrib-%::
 	@for d in ${CONTRIB_DIRS}; \
 	do [ -d "$$d" ] || continue; \
-		echo "\n${HIGHLIGHT} For directory ${CODE}$$d${_END}${HIGHLIGHT}, target ${CODE}${@:contrib-%=%}${_END}${HIGHLIGHT}: ${_END}\n"; \
+		echo "\n${HIGHLIGHT}For directory ${CODE}$$d${_END}${HIGHLIGHT}, target ${CODE}${@:contrib-%=%}${_END}${HIGHLIGHT}:${_END_BOLD}${_END}\n"; \
 		${MAKE} SRC_DIR=$$d SPEC_DIR=$$d --include-dir=$$d ${@:contrib-%=%} || exit $$?; \
 	done 2>&1
 
@@ -450,11 +479,36 @@ list:
 pwd:
 	@cd ${SRC_DIR} && echo "Currently in directory: ${CODE}$$(pwd)${_END}"
 
-.PHONY: one-time-setup clean-setup uninstall-uv
-.PHONY: force-setup force-one-time-setup rm-venv
-.PHONY: command-check-uv uv-venv install-dev-dependencies install-requirements-txt-dependencies
+.PHONY: list pwd
 
-setup one-time-setup:: install-uv uv-venv install-dev-dependencies
+# Some explicit *-watch targets are defined above in this file for shell commands
+# with `--watch` flags, which continually rerun when files change. The following
+# %-watch target pattern provides similar behavior for arbitrary make targets. For
+# example, to keep running the unit tests as you edit the files, use:
+#   make unit-tests-watch
+# NOTE: The sleep command is used to allow two CTRL-c invocations to successfully
+# interrupt the loop!
+
+%-watch: command-check-fswatch
+	@while true; do \
+        $(MAKE) ${@:%-watch=%}; \
+        echo "${HIGHLIGHT}Use CTRL-c TWICE to exit...${_END_BOLD}${_END}"; \
+        fswatch --one-event --recursive --extended \
+            --include '\.mk$$' \
+            --exclude '\.git' \
+            --exclude '\.coverage' \
+            --exclude '\.hypothesis' \
+            --exclude '__pycache__' \
+            --exclude '\..*_cache' \
+            . || exit 0; \
+        sleep 1; \
+    done
+
+.PHONY: one-time-setup clean-setup uninstall-uv install-dev-dependencies install-brew-commands
+.PHONY: force-setup force-one-time-setup rm-venv
+.PHONY: command-check-uv uv-venv install-requirements-txt-dependencies
+
+setup one-time-setup:: install-brew-commands uv-venv install-dev-dependencies
 force-setup force-one-time-setup:: rm-venv contrib-rm-venv setup
 rm-venv::
 	rm -rf .venv
@@ -468,15 +522,23 @@ install-dev-dependencies::
 install-requirements-txt-dependencies::
 	uv pip install --requirements requirements.txt
 
-# Check if a command is installed. If not, try to provide help on installing it.
-# If make is invoked by the || clause, we unset MAKEFLAGS to hack around suppressing
-# a warning about a potentially-undefined variable used in the targets
-# help-command-not-installed and  help-command-$$cmd.
+install-brew-commands:: install-uv install-fswatch # install-jq
+	@command -v jq > /dev/null || ( \
+	echo "${TIP_LABEL}The ${CODE}jq${_END} command is recommended for analyzing JSON files, but we don't install it automatically." && \
+	echo "${TIP_LABEL}If you want to install it, run the command ${CODE}make install-jq${_END}." )
+
+# Check if a command is installed. If not and brew is installed, try that. If brew isn't
+# installed or it fails to work, try to provide help on installing the command.
 install-%::
 	@cmd=${@:install-%=%} && command -v $$cmd > /dev/null && \
 		echo "${INFO_LABEL}Command ${CODE}$$cmd${_END} is already installed." || \
-		${MAKE} MAKEFLAGS= CMD=$$cmd LABEL=WARNING help-command-not-installed help-command-$$cmd
-		@true
+		${MAKE} do-brew-install-$$cmd
+
+do-brew-install-%::
+	@cmd=${@:do-brew-install-%=%} && command -v brew > /dev/null && \
+		echo "Using HomeBrew to install $$cmd:" && brew install $$cmd || \
+		echo "${WARNING_LABEL}${CODE}HomeBrew${_END} is not installed, so we can't install ${CODE}$$cmd${_END}. Attempting to provide help..." && \
+		${MAKE} LABEL=WARNING help-command-$$cmd && exit 1
 
 uv-venv:: command-check-uv
 	@test -d .venv && echo "${INFO_LABEL}directory ${CODE}.venv${_END} already exists; not running ${CODE}uv venv${_END}." || uv venv
@@ -490,8 +552,6 @@ uninstall-uv::
 
 command-check-uv::
 	@command -v uv > /dev/null || ! ${MAKE} help-command-uv
-
-install-jq:: help-command-jq
 
 %-error:
 	$(info ${ERROR}${@:%-error=%} - Error ${_END})
@@ -511,8 +571,15 @@ endef
 
 help-command-uvx-message = ${help-command-uv-message}
 
+
+define help-command-fswatch-message
+The command ${CODE}fswatch${_END} is required for most of the ${CODE}%-watch${_END} targets to work.
+See its website, ${CODE}https://emcrisostomo.github.io/fswatch/${_END} for details.
+For example, if you have HomeBrew installed, run ${CODE}brew install fswatch${_END}.
+endef
+
 define help-command-jq-message
-${INFO_LABEL}The CLI command ${CODE}jq${_END} is useful, but not required, for processing JSON file.
+${INFO_LABEL}The CLI command ${CODE}jq${_END} is recommended, but not required, for processing JSON file.
 ${INFO_LABEL}See ${CODE}https://jqlang.org/download/${_END} for installation instructions.
 endef
 
@@ -521,6 +588,9 @@ open-url-message = ${TIP_LABEL}Try ${CODE}⌘+click${_END} or ${CODE}^+click${_E
 define skip-command-target-message
 ${WARNING_LABEL}Skipping ${CODE}${@:%-command=%}${_END} in ${CODE}${SRC_DIR}${_END}! Target ${CODE}$@${_END} is overridden in ${CODE}${SRC_DIR}/.custom.mk${_END}.
 endef
+
+skip-command-example:
+	@echo "${skip-command-target-message}"
 
 # Definitions for the website:
 include .website.mk
