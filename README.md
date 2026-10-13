@@ -167,7 +167,7 @@ Or use these commands:
 ```shell
 cd src
 uv run ruff check --fix  .
-uv run pylint --recursive=y --ignore=.venv --ignore-pattern='.*cache.*'  .
+uv run pylint --recursive=y --ignore=.venv --ignore-patterns='.*cache.*'  .
 ```
 
 There is also a `--watch` CLI option for `ruff` that keeps it running as you fix mistakes and save the files. We have a custom `make` target for this purpose. Use _one_ of the following command choices:
