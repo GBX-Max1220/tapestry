@@ -1,19 +1,19 @@
 # Data Management Requirements
 
-| Field       | Value                  |
-| :---------- | :--------------------- |
-| Status      | Draft                  |
-| Confidence  | Medium (3/5)           |
-| Created     | June 27, 2026          |
-| Last Update | September 14, 2026     |
-| Versions    | V0.2 - September 14, 2026 |
+| Field       | Value                       |
+| :---------- | :-------------------------- |
+| Status      | Draft                       |
+| Confidence  | Medium (3/5)                |
+| Created     | June 27, 2026               |
+| Last Update | September 14, 2026          |
+| Versions    | V0.1.1 - September 14, 2026 |
 
 > [!NOTE]
 > The requirements in this document are _derived_ in part from the [Data Governance Requirements](data-governance-requirements.md), because they bridge those high-level requirements to the architecture, design, and implementation details needed to meet them. (This document also covers other data-related requirements.) Some terms are defined in that document.
 >
 > Because architecture through implementation requirements are covered here, these requirements overlap with the concerns of the [Infrastructure & Operations](../infrastructure-operations/) work group. We may choose to move these requirements under that group, but for now, it is more convenient to work with them in tandem with the governance requirements.
 
-This document supports issue [#232](https://github.com/The-AI-Alliance/tapestry/issues/232) by defining the second iteration ("V0.2") of the data management requirements for datasets used in Tapestry training, tuning, alignment, and evaluation work. It defines the minimum interfaces and enforcement points an implementation must provide without selecting a storage, catalog, or policy product.
+This document supports issue [#232](https://github.com/The-AI-Alliance/tapestry/issues/232) by contributing to the second iteration ("V0.2") of the data management requirements for datasets used in Tapestry training, tuning, alignment, and evaluation work. It defines the minimum interfaces and enforcement points an implementation must provide without selecting a storage, catalog, or policy product.
 
 ## Scope of This Document
 
@@ -62,7 +62,7 @@ This document supports issue [#232](https://github.com/The-AI-Alliance/tapestry/
 
 ## Required Service Boundaries
 
-V0.2 defines logical interfaces rather than deployment units. An implementation may combine them, but the responsibilities must remain testable independently.
+V0.2 defines logical interfaces rather than deployment units. An implementation may combine them, but the responsibilities must remain independently testable.
 
 | Boundary | Responsibility | Minimum result |
 | :------- | :------------- | :------------- |
@@ -76,7 +76,7 @@ V0.2 defines logical interfaces rather than deployment units. An implementation 
 
 ## Manifest Validation
 
-The MVP must validate a manifest before any data access. Validation is ordered so that a rejected request does not reveal metadata the caller is not allowed to see:
+The system must validate a manifest before any data access. Validation is ordered so that a rejected request does not reveal metadata the caller is not allowed to see:
 
 1. Authenticate the caller and participant context.
 2. Resolve the artifact identifier and requested immutable version.
@@ -92,14 +92,14 @@ The result must use stable reason codes suitable for automated gates. Human-read
 
 Every accepted or denied access request and every processing transition must record:
 
-- event identifier and timestamp;
-- authenticated actor, service, and participant boundary;
-- action and outcome, including stable reason codes;
-- artifact identifier and immutable version, subject to visibility rules;
-- purpose, processing location, and policy version;
-- approval or exception reference, when applicable;
-- job identifier and parent/output artifact links for transformations; and
-- integrity evidence for the event, such as a digest or signed envelope.
+- Event identifier and timestamp;
+- Authenticated actor, service, and participant boundary;
+- Action and outcome, including stable reason codes;
+- Artifact identifier and immutable version, subject to visibility rules;
+- Purpose, processing location, and policy version;
+- Approval or exception reference, when applicable;
+- Job identifier and parent/output artifact links for transformations; and
+- Integrity evidence for the event, such as a digest or signed envelope.
 
 Events are append-only. Corrections create a new event that references the superseded record rather than silently replacing history.
 
@@ -174,7 +174,7 @@ Tapestry does not need to commit to the ODS implementation to adopt these patter
 - **Evaluation & Certification:** consumes dataset cards, hashes, review evidence, release-gate inputs, and visibility-tiered reports.
 - **Governance & Participation:** defines stewardship, approval authority, contribution credit, and dispute handling.
 
-## MVP Recommendation
+## Initial MVP Recommendation
 
 For the first implementation pass, prefer a lightweight workflow:
 

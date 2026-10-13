@@ -1,6 +1,6 @@
-# Open Data Spaces assessment
+# Open Data Spaces Assessment
 
-**Status:** Recommendation  
+**Status:** Draft Recommendation
 **Date:** September 14, 2026  
 **Related issue:** [#195](https://github.com/The-AI-Alliance/tapestry/issues/195)
 
@@ -10,29 +10,35 @@ Tapestry should adopt the Open Data Spaces (ODS) architectural patterns for disc
 
 This is a "patterns now, implementation after evidence" decision. It preserves an interoperability path without making an early platform commitment that has not been validated against Tapestry's large-artifact, sovereign-boundary, withdrawal, and audit needs.
 
-## What was assessed
+## What Was Assessed
 
 The assessment used the current ODS reference architecture and implementation materials, then compared them with Tapestry's [data governance requirements](data-governance-requirements.md) and [data management requirements](data-management-requirements.md). It focused on the capabilities most relevant to Tapestry:
 
-- locating data without centralizing it;
-- exchanging machine-readable metadata and semantics;
-- authenticating participants and enforcing usage policy;
-- keeping restricted bytes inside their permitted boundary;
-- recording lineage, policy decisions, and withdrawal events; and
-- operating the system without making one vendor or service a trust bottleneck.
+- Locating data without centralizing it
+- Exchanging machine-readable metadata and semantics
+- Authenticating participants and enforcing usage policy
+- Keeping restricted bytes inside their permitted boundary
+- Recording lineage, policy decisions, and withdrawal events
+- Operating the system without making one vendor or service a trust bottleneck
 
-ODS is a strong conceptual match. Its three main concerns—addressability and discoverability, ontology and semantic interoperability, and identity and usage control—map directly to Tapestry's requirements for resolvable artifact references, interoperable manifests, participant identity, and enforceable policy.
+ODS is a strong conceptual match. It has three main concerns:
 
-## Current maturity and gaps
+1. Addressability and discoverability,
+2. Ontology and semantic interoperability
+3. Identity and usage control
+
+These concerns map directly to Tapestry's requirements for resolvable artifact references, interoperable manifests, participant identity, and enforceable policy.
+
+## Current Maturity and Gaps
 
 The Information-technology Promotion Agency, Japan (IPA) publishes ODS-RAM V2, protocols, an SDK, and middleware. The public implementation organization also shows active protocol and deployment repositories. That is enough evidence to treat ODS as an implementable architecture rather than only a position paper.
 
-However, IPA's published FAQ says that no certification or conformity-assessment program has been established. Tapestry therefore must not describe itself, a deployment, or an artifact as "ODS compliant" or "ODS certified." More importantly, the available materials do not by themselves prove that the implementation meets Tapestry's workload and governance constraints. Those claims need local evidence.
+However, IPA's published FAQ says that no certification or conformity-assessment program has been established. Tapestry therefore must not describe itself, a deployment, or an artifact as "ODS compliant" or "ODS certified." More importantly, the available materials do not by themselves prove that the implementation meets Tapestry's workload and governance constraints. Those claims need local evidence and verification.
 
 The main unanswered questions are:
 
 - Can an ODS deployment transfer or reference multi-gigabyte artifacts without unnecessary buffering or copying?
-- Can data and model weights remain local while metadata, policy, and computation requests cross the boundary?
+- Can data and model weights remain local while metadata, policy, and computation requests cross boundaries?
 - Are policy denial, consent withdrawal, and deletion propagated quickly and recorded immutably enough for Tapestry's audit model?
 - Can Tapestry's manifests and policy vocabulary map to ODS protocols without losing meaning?
 - What operational and security burden does the middleware add for a small sovereign participant?
