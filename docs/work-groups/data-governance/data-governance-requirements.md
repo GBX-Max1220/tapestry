@@ -53,7 +53,7 @@ These modes should be enforceable through both policy and workflow design. For e
 
 Every dataset and derived artifact must have one accountable steward and one or more recorded contribution/usage category. The steward may propose a category, but use in a pipeline requires approval from the authority named by the participant or consortium policy. When metadata is incomplete or controls disagree, the most restrictive applicable category wins until the conflict is resolved.
 
-Approval is specific to an artifact version, purpose, processing location, and time window. A new version require a new approval. Approval for evaluation does not imply approval for training, and approval for one model program does not automatically carry to another. Emergency exceptions must identify the approving authority, expiry, reason, and compensating controls; an exception may never waive a legal or contractual prohibition.
+Approval is specific to an artifact version, purpose, processing location, and time window. A new version requires a new approval. Approval for evaluation does not imply approval for training, and approval for one model program does not automatically carry to another. Emergency exceptions must identify the approving authority, expiry, reason, and compensating controls; an exception may never waive a legal or contractual prohibition.
 
 ### Derived Artifacts
 

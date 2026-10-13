@@ -55,7 +55,7 @@ This document supports issue [#232](https://github.com/The-AI-Alliance/tapestry/
 | DM:12 | Deliver an MVP that works with local files, manifests, and documented attestations. | N/A | Early work should be useful before the full consortium platform exists. |
 | DM:13 | Authenticate every user, service, and participant node and preserve that identity in data events. | DG:7,9,11 | Authorization and audit records are only useful when actions have a stable accountable identity. |
 | DM:14 | Separate policy decisions from enforcement and record the policy version and decision used for each request. | DG:8,9,12 | Participants must be able to inspect why access was allowed or denied and reproduce the decision later. |
-| DM:15 | Dispatch processing only to locations and run times allowed by the artifact's residency and use constraints. | DG:3,5,6,12 | Scheduling is an enforcement boundary for sovereign and restricted data. |
+| DM:15 | Dispatch processing only to locations and runtimes allowed by the artifact's residency and use constraints. | DG:3,5,6,12 | Scheduling is an enforcement boundary for sovereign and restricted data. |
 | DM:16 | Reject manifests with missing required governance fields, unknown artifact versions, or weaker output restrictions. | DG:3,5,13,14 | Invalid metadata must fail before a job can read protected data. |
 | DM:17 | Support artifact withdrawal by blocking new access and identifying active jobs, replicas, caches, and descendants. | DG:9,15 | Withdrawal cannot be enforced without an inventory of current and downstream use. |
 | DM:18 | Produce visibility-filtered audit exports without changing the underlying event history. | DG:7 | Public and consortium reports must not leak participant-private details. |
