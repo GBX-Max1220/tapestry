@@ -5,19 +5,20 @@ description = "The Python code for Project Tapestry"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "torch>=2.14.0",
+    "torch>=2.14.1",
     "numpy>=2.5.3",
     "pathspec>=1.1.1",
 ]
 
 [project.optional-dependencies]
 dev = [
+    "hypothesis>=1.168",
     "pytest>=9.1.1",
     "pytest-cov>=7.1.0",
-    "pylint>=4.0.8",
+    "pylint>=4.1.2",
     "black>=26.5.1",
-    "ruff>=0.16.8",
-    "ty>=0.0.82",
+    "ruff>=0.16.10",
+    "ty>=0.0.84",
 ]
 
 [build-system]
@@ -44,3 +45,9 @@ max-line-length = 120
 
 [tool.pylint.main]
 init-hook = "import sys" #; sys.path.insert(0, 'src')"
+
+# We aren't (currently) using pyrefly for type checking, but the plugin
+# for IDEs, like VSCode, is often installed. The following allows pyrefly
+# to find dependencies, for those circumstances.
+[tool.pyrefly]
+search_path = [".venv/lib/python3.12/site-packages"]
