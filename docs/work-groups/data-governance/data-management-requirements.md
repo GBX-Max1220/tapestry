@@ -1,19 +1,19 @@
 # Data Management Requirements
 
-| Field       | Value                  |
-| :---------- | :--------------------- |
-| Status      | Draft                  |
-| Confidence  | Medium (3/5)           |
-| Created     | June 27, 2026          |
-| Last Update | September 14, 2026     |
-| Versions    | V0.2 - September 14, 2026 |
+| Field       | Value                       |
+| :---------- | :-------------------------- |
+| Status      | Draft                       |
+| Confidence  | Medium (3/5)                |
+| Created     | June 27, 2026               |
+| Last Update | September 14, 2026          |
+| Versions    | V0.1.1 - September 14, 2026 |
 
 > [!NOTE]
 > The requirements in this document are _derived_ in part from the [Data Governance Requirements](data-governance-requirements.md), because they bridge those high-level requirements to the architecture, design, and implementation details needed to meet them. (This document also covers other data-related requirements.) Some terms are defined in that document.
 >
 > Because architecture through implementation requirements are covered here, these requirements overlap with the concerns of the [Infrastructure & Operations](../infrastructure-operations/) work group. We may choose to move these requirements under that group, but for now, it is more convenient to work with them in tandem with the governance requirements.
 
-This document supports issue [#232](https://github.com/The-AI-Alliance/tapestry/issues/232) by defining the second iteration ("V0.2") of the data management requirements for datasets used in Tapestry training, tuning, alignment, and evaluation work. It defines the minimum interfaces and enforcement points an implementation must provide without selecting a storage, catalog, or policy product.
+This document supports issue [#232](https://github.com/The-AI-Alliance/tapestry/issues/232) by contributing to the second iteration ("V0.2") of the data management requirements for datasets used in Tapestry training, tuning, alignment, and evaluation work. It defines the minimum interfaces and enforcement points an implementation must provide without selecting a storage, catalog, or policy product.
 
 ## Scope of This Document
 
@@ -55,14 +55,14 @@ This document supports issue [#232](https://github.com/The-AI-Alliance/tapestry/
 | DM:12 | Deliver an MVP that works with local files, manifests, and documented attestations. | N/A | Early work should be useful before the full consortium platform exists. |
 | DM:13 | Authenticate every user, service, and participant node and preserve that identity in data events. | DG:7,9,11 | Authorization and audit records are only useful when actions have a stable accountable identity. |
 | DM:14 | Separate policy decisions from enforcement and record the policy version and decision used for each request. | DG:8,9,12 | Participants must be able to inspect why access was allowed or denied and reproduce the decision later. |
-| DM:15 | Dispatch processing only to locations and runtimes allowed by the artifact's residency and use constraints. | DG:3,5,6,12 | Scheduling is an enforcement boundary for sovereign and restricted data. |
+| DM:15 | Dispatch processing only to locations and run times allowed by the artifact's residency and use constraints. | DG:3,5,6,12 | Scheduling is an enforcement boundary for sovereign and restricted data. |
 | DM:16 | Reject manifests with missing required governance fields, unknown artifact versions, or weaker output restrictions. | DG:3,5,13,14 | Invalid metadata must fail before a job can read protected data. |
 | DM:17 | Support artifact withdrawal by blocking new access and identifying active jobs, replicas, caches, and descendants. | DG:9,15 | Withdrawal cannot be enforced without an inventory of current and downstream use. |
 | DM:18 | Produce visibility-filtered audit exports without changing the underlying event history. | DG:7 | Public and consortium reports must not leak participant-private details. |
 
 ## Required Service Boundaries
 
-V0.2 defines logical interfaces rather than deployment units. An implementation may combine them, but the responsibilities must remain testable independently.
+V0.2 defines logical interfaces rather than deployment units. An implementation may combine them, but the responsibilities must remain independently testable.
 
 | Boundary | Responsibility | Minimum result |
 | :------- | :------------- | :------------- |
@@ -76,7 +76,7 @@ V0.2 defines logical interfaces rather than deployment units. An implementation 
 
 ## Manifest Validation
 
-The MVP must validate a manifest before any data access. Validation is ordered so that a rejected request does not reveal metadata the caller is not allowed to see:
+The system must validate a manifest before any data access. Validation is ordered so that a rejected request does not reveal metadata the caller is not allowed to see:
 
 1. Authenticate the caller and participant context.
 2. Resolve the artifact identifier and requested immutable version.
@@ -174,7 +174,7 @@ Tapestry does not need to commit to the ODS implementation to adopt these patter
 - **Evaluation & Certification:** consumes dataset cards, hashes, review evidence, release-gate inputs, and visibility-tiered reports.
 - **Governance & Participation:** defines stewardship, approval authority, contribution credit, and dispute handling.
 
-## MVP Recommendation
+## Initial MVP Recommendation
 
 For the first implementation pass, prefer a lightweight workflow:
 

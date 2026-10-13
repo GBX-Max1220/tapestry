@@ -8,7 +8,7 @@
 | Last Update | September 14, 2026          |
 | Versions    | V0.1.1 - September 14, 2026 |
 
-This document supports issue [#231](https://github.com/The-AI-Alliance/tapestry/issues/231) by defining contributing to the second iteration ("V0.2") of the data governance requirements for datasets used in Tapestry training, tuning, alignment, and evaluation work. It provides further clarification on the Tapestry requirements to enable the use of datasets with various constraints on permissible use.
+This document supports issue [#231](https://github.com/The-AI-Alliance/tapestry/issues/231) by contributing to the second iteration ("V0.2") of the data governance requirements for datasets used in Tapestry training, tuning, alignment, and evaluation work. It provides further clarification on the Tapestry requirements to enable the use of datasets with various constraints on permissible use.
 
 The core requirement is simple: Tapestry needs to know what data exists, who can use it, where it may reside, what processing has happened to it, and what evidence can be shared without violating participant sovereignty.
 
