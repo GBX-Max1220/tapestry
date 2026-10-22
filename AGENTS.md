@@ -1,6 +1,8 @@
-# Tapestry Repo Guide
+# AGENTS.md
 
-This repository is the technical home for Project Tapestry. Use this file as the fast path for orientation, navigation, and local conventions.
+This file provides guidance to agents when working with code in the Project Tapestry repository.
+
+Use this file as the fast path for orientation, navigation, and local conventions.
 
 ## Repository Map
 
@@ -85,6 +87,56 @@ Keep new code aligned with that split. Add tests under the matching `src/tests/t
 - When creating or editing Markdown under `docs/`, do not hard-wrap prose paragraphs; use soft wrap and break only for Markdown structure (see `docs/README.md` § Writing conventions).
 - For new inline Mermaid diagrams in `architecture/reference` docs, follow the conventions in `docs/architecture/diagrams/README.md` § Inline Mermaid style (TAP-009 for decision/sovereignty flows; `0-tva-methodology.md` for phased process/status diagrams).
 - Treat governance documents as load-bearing design constraints, not after-the-fact policy notes.
+
+## Build, Lint, Test Commands
+
+```bash
+make one-time-setup          # First-time uv venv + dependency install
+make tests                   # Run full test suite (alias: make unit-tests)
+make format                  # Run black on src/
+make lint                    # Run ruff + pylint on src/
+make type-check              # Run ty on src/
+make before-pr               # format + lint + type-check + tests for src/ AND contrib/*
+make consortium-demo         # Run examples/consortium_training_demo.py
+```
+
+**Run a single test or file** — pytest is configured with `testpaths = ["src/tests"]` and `pythonpath = ["src"]`, so run from the repo root:
+
+```bash
+# Single test function
+uv run pytest src/tests/tapestry/training/consortium/test_policy.py::test_all_below_floor_returns_empty -v
+
+# Single test file
+uv run pytest src/tests/tapestry/training/consortium/test_policy.py -v
+
+# With WHICH_TESTS make variable (path relative to src/)
+make unit-tests WHICH_TESTS=tests/tapestry/training/consortium/test_policy.py
+```
+
+**Watch mode** (requires `fswatch`): append `-watch` to most targets, e.g. `make unit-tests-watch`.
+
+## Code Style
+
+- **Line length**: 120 characters (enforced by `black`, `ruff`, and `pylint` — all three configs set to 120).
+- **Target version**: Python 3.12.
+- All source files begin with `from __future__ import annotations` to enable deferred annotation evaluation.
+- Use `collections.abc` types (e.g., `Sequence`) rather than `typing` equivalents for parameter annotations.
+- `ModelState = dict[str, torch.Tensor]` is the canonical type alias; import it from `tapestry.training.consortium.messages` in new code — **not** from `types.py` (that file is a compatibility shim for old imports only).
+- Dataclasses use `frozen=True` for all message/result types.
+- Enums inherit from `(str, Enum)` to allow string aliases (e.g., `ContributionPolicy(weighting="equal")`).
+- `pylint` is run with `--recursive=y --ignore=.venv --ignore-patterns='.*cache.*'`; suppress per-file with inline `# pylint: disable=...` comments (see `node.py` for examples).
+
+## Testing Patterns
+
+- Tests live in `src/tests/tapestry/` mirroring `src/tapestry/` exactly — one test file per source module (e.g., `test_policy.py` ↔ `policy.py`).
+- **Hypothesis property-based tests** are used heavily alongside standard pytest. Import strategies from `tests.test_utils.hypothesis.model_strategies` (in `src/tests/test_utils/`), not from `hypothesis` directly, for project-specific generators.
+- `pytest.approx` with `abs=1e-9` is the standard for floating-point weight assertions.
+- Coverage is run automatically by `make unit-tests` via `coverage run -m pytest` + `coverage report -m`.
+
+## Critical Patterns
+
+- `types.py` in `training/consortium/` re-exports everything from `messages.py` for backward compatibility — prefer importing from `messages.py` in new code.
+- The `contrib/` tree has its own isolated `make` context: each contribution directory is invoked with `--include-dir $$dir` so a `.custom.mk` there applies only to that subdirectory. Do not assume top-level `make` targets cover `contrib/` automatically — use `make before-pr` (not `make before-pr-top`).
 
 ## Plain English (PRs and issues)
 
