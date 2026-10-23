@@ -4,6 +4,7 @@
 
 CONTRIBUTION_VALIDATOR_DIR := contrib/build4me2-contribution-validator
 
+executables:: contribution-validator-all
 contribution-validator-all:: contribution-validator-demo contribution-validator-tests
 
 contribution-validator-demo::

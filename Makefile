@@ -13,6 +13,7 @@ endef
 
 .PHONY: consortium-demo
 
+executables:: consortium-demo
 consortium-demo::
 	@echo "${INFO_LABEL}Running the consortium-training demo: ${CODE}examples/consortium_training_demo.py${_END}"
 	uv run python examples/consortium_training_demo.py

@@ -4,6 +4,7 @@ CULTURAL_CPT_DIR := contrib/jneums-cultural-cpt-validation
 
 .PHONY: cultural-cpt-all cultural-cpt-validation cultural-cpt-aggregation cultural-cpt-stats cultural-cpt-tests cultural-cpt-fetch-seed cultural-cpt-validate-corpus
 
+executables:: cultural-cpt-all
 cultural-cpt-all:: cultural-cpt-validation cultural-cpt-aggregation cultural-cpt-stats cultural-cpt-tests cultural-cpt-fetch-seed cultural-cpt-validate-corpus
 
 cultural-cpt-validation::

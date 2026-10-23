@@ -4,12 +4,13 @@
 
 CONSORTIUM_EXPERIMENT_DIR := contrib/jneums-consortium-experiment
 
+executables:: consortium-experiment-all
 consortium-experiment-all:: consortium-experiment consortium-tests
 
 consortium-experiment::
-	@echo "${INFO}Running the consortium-training experiment metrics...${_END}"
+	@echo "${INFO_LABEL}Running the consortium-training experiment metrics..."
 	PYTHONPATH="${PWD}/${SRC_DIR}:${PWD}/${CONSORTIUM_EXPERIMENT_DIR}" uv run python ${CONSORTIUM_EXPERIMENT_DIR}/run.py
 
 consortium-tests::
-	@echo "${INFO}Running the consortium-training tests...${_END}"
+	@echo "${INFO_LABEL}Running the consortium-training tests..."
 	PYTHONPATH=${PWD}/${SRC_DIR}:${PWD}/${CONSORTIUM_EXPERIMENT_DIR} uv run python -m pytest ${SRC_DIR}/tests/tapestry/training/consortium ${CONSORTIUM_EXPERIMENT_DIR}/tests -q
