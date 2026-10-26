@@ -36,10 +36,12 @@ def _doc(**kw) -> dict:
     base.update(kw)
     return base
 
+
 @pytest.fixture
 def stage_arm_documents():
     for arm in ("grounded", "language_matched"):
         _stage_arm_document(arm)
+
 
 def _stage_arm_document(arm: str):
     path1 = Path(f"{_SEED_ROOT}/{arm}.jsonl")
