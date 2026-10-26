@@ -7,7 +7,7 @@ name = "nguyennm1024-sociocultural-alignment"
 version = "0.1.0"
 description = "An experiment with cultural alignment tuning."
 license = { text = "Apache-2.0" }
-requires-python = ">=3.12"
+requires-python = ">=3.14,<3.15"
 dependencies = [
     # --- data synthesis (data_synthesis/) ---
     "openai>=1.100.0",

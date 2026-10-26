@@ -69,7 +69,7 @@ Keep new code aligned with that split. Add tests under the matching `src/tests/t
 
 ## Working Conventions
 
-- Use Python 3.12 and `uv` for environment management.
+- Use Python 3.14 and `uv` for environment management.
 - Prefer `make` targets for common tasks:
   - `make one-time-setup`
   - `make tests` or `make unit-tests`
@@ -118,7 +118,7 @@ make unit-tests WHICH_TESTS=tests/tapestry/training/consortium/test_policy.py
 ## Code Style
 
 - **Line length**: 120 characters (enforced by `black`, `ruff`, and `pylint` — all three configs set to 120).
-- **Target version**: Python 3.12.
+- **Target version**: Python 3.14.
 - All source files begin with `from __future__ import annotations` to enable deferred annotation evaluation.
 - Use `collections.abc` types (e.g., `Sequence`) rather than `typing` equivalents for parameter annotations.
 - `ModelState = dict[str, torch.Tensor]` is the canonical type alias; import it from `tapestry.training.consortium.messages` in new code — **not** from `types.py` (that file is a compatibility shim for old imports only).
