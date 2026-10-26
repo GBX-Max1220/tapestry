@@ -52,9 +52,6 @@ class BenchmarkConfig:
     runner_config: Mapping[str, str] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
-        _require_text("task_version", self.task_version)
-        _require_text("dataset_revision", self.dataset_revision)
-        _require_text("prompt_template", self.prompt_template)
         if self.few_shot_count < 0:
             raise ValueError("few_shot_count must not be negative")
         object.__setattr__(self, "runner_config", _freeze_metadata(self.runner_config))
@@ -76,7 +73,7 @@ class BenchmarkSpec:  # pylint: disable=too-many-instance-attributes
 
     benchmark_id: str
     name: str
-    kind: BenchmarkKind | str
+    kind: BenchmarkKind
     metric: str
     config: BenchmarkConfig
     threshold: float
@@ -88,7 +85,6 @@ class BenchmarkSpec:  # pylint: disable=too-many-instance-attributes
         _require_text("name", self.name)
         _require_text("metric", self.metric)
         _require_finite("threshold", self.threshold)
-        object.__setattr__(self, "kind", BenchmarkKind(self.kind))
 
     def accepts(self, score: float) -> bool:
         """Return whether ``score`` meets the benchmark threshold."""
@@ -116,12 +112,12 @@ class EvaluationResult:
 class EvaluationBundle:
     """Versioned runner output for a benchmark configuration."""
 
-    results: tuple[EvaluationResult, ...]
     config_hash: str
     model_artifact_id: str
     runner_id: str
     runner_version: str
     schema_version: str = SCHEMA_VERSION
+    results: list[EvaluationResult] = field(default_factory=list)
     metadata: Mapping[str, str] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
@@ -133,7 +129,6 @@ class EvaluationBundle:
         duplicate_ids = _duplicates(result.benchmark_id for result in self.results)
         if duplicate_ids:
             raise ValueError(f"duplicate benchmark results: {', '.join(duplicate_ids)}")
-        object.__setattr__(self, "results", tuple(self.results))
         object.__setattr__(self, "metadata", _freeze_metadata(self.metadata))
 
 
@@ -153,16 +148,16 @@ class GateDecision:
     """Overall go/no-go result for an evaluation gate."""
 
     passed: bool
-    findings: tuple[GateFinding, ...]
+    findings: list[GateFinding] = field(default_factory=list)
 
     @property
-    def blocking_findings(self) -> tuple[GateFinding, ...]:
+    def blocking_findings(self) -> list[GateFinding]:
         """Findings that prevent the gate from passing."""
-        return tuple(
+        return [
             finding
             for finding in self.findings
             if finding.status in {GateStatus.FAIL, GateStatus.INVALID, GateStatus.MISSING}
-        )
+        ]
 
 
 class EvaluationGate:
@@ -232,7 +227,7 @@ class EvaluationGate:
             )
 
         blocking = any(finding.status in {GateStatus.FAIL, GateStatus.MISSING} for finding in findings)
-        return GateDecision(passed=not blocking, findings=tuple(findings))
+        return GateDecision(passed=not blocking, findings=findings)
 
     def decide_bundle(self, bundle: EvaluationBundle) -> GateDecision:
         """Return the go/no-go decision for a versioned result bundle."""
@@ -257,7 +252,7 @@ class EvaluationGate:
                 )
             )
         if findings:
-            return GateDecision(passed=False, findings=tuple(findings))
+            return GateDecision(passed=False, findings=findings)
         return self.decide(list(bundle.results))
 
 

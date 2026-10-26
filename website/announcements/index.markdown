@@ -30,7 +30,7 @@ Project Tapestry is managed on a three-month _milestone_ cycle, offset by one mo
 | :-- | :-- |
 | **Dates**     | June - August, 2026 |
 | **Details**   | [Milestone Zero - M0](./milestone-zero/) |
-| **Release**   | [v0.1.0-M0]({{site.repo_url}}/releases/tag/v0.1.0-M0){:target="m0-release"} |
+| **Release**   | [v0.1.0-M0]({{site.repo_url}}/releases/tag/V0.1.0-M0){:target="m0-release"} |
 | **Dashboard** | [Tapestry Project - M0]({{site.repo_project_dashboard_url}}?filterQuery=milestone%3AM0){:target="dash"}
 
 Milestone "zero" (M0) was Project Tapestry’s first technical milestone. It was completed September 1, 2026. We used &ldquo;zero”&rdquo;, rather than &ldquo;one&rdquo;, because M0 was about building the consortium, while also pursuing initial goals.
@@ -60,9 +60,9 @@ M1 is building on the prototype work of M0 to expand the number of sovereign nod
 | **Dates**     | December, 2026 - February, 2027 |
 | **Details**   | TBD |
 | **Release**   | TBD |
-| **Dashboard** | [Tapestry Project - M1]({{site.repo_project_dashboard_url}}?filterQuery=milestone%3AM2){:target="dash"}
+| **Dashboard** | [Tapestry Project - M2]({{site.repo_project_dashboard_url}}?filterQuery=milestone%3AM2){:target="dash"}
 
-In the M2 time frame, we plan to complete an end-to-end, production quality and globally-distributed training and post-training infrastructure and software stack, with further progress on building domain-specific and culturally-specific models, based on open-weight models. We also plan to complete preparation for training our own foundation models &ldquo;from scratch&rdquo; and to begin that process.
+In the M2 time frame, we plan to complete an end-to-end, production quality and globally-distributed training and post-training infrastructure stack, with further progress on building domain-specific and culturally-specific models, based on open-weight models. We also plan to complete preparation for training our own foundation models &ldquo;from scratch&rdquo;.
 
 ---
 
