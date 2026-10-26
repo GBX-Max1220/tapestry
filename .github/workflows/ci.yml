@@ -42,7 +42,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v7
         with:
-          python-version: "3.12"
+          python-version: "3.14"
 
       - name: uv download cache
         uses: actions/cache@v6
@@ -52,10 +52,11 @@ jobs:
           restore-keys: |
             uv-${{ runner.os }}-
 
-      # Do not cache .venv. Restored venvs keep a python3 symlink into the runner
+      # Don't cache .venv. Restored venvs keep a python3 symlink into the runner
       # image; that path disappears on the next image causing subsequent failures.
+      # Add the flag `--no-managed-python` to `uv venv` if necessary.
       - name: Create virtual environment
-        run: uv venv --no-managed-python
+        run: uv venv
 
       - name: Install dependencies
         run: uv pip install -e ".[dev]"
