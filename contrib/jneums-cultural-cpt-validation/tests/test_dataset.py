@@ -9,6 +9,7 @@ also exercise the committed real seed corpus end to end.
 from __future__ import annotations
 
 import json
+import shutil
 import sys
 from pathlib import Path
 
@@ -34,6 +35,21 @@ def _doc(**kw) -> dict:
     )
     base.update(kw)
     return base
+
+@pytest.fixture
+def stage_arm_documents():
+    for arm in ("grounded", "language_matched"):
+        _stage_arm_document(arm)
+
+def _stage_arm_document(arm: str):
+    path1 = Path(f"{_SEED_ROOT}/{arm}.jsonl")
+    if path1.exists():
+        return
+
+    path2 = Path(f"{_SEED_ROOT}/{arm}.example.jsonl")
+    assert path2.exists(), path2
+    shutil.copyfile(path2, path1)
+    assert path1.exists(), path1
 
 
 def _write_root(tmp_path: Path, *, grounded: list[dict], matched: list[dict], manifest: dict | None = None) -> Path:
@@ -64,14 +80,14 @@ def _write_root(tmp_path: Path, *, grounded: list[dict], matched: list[dict], ma
 # --- the committed real seed corpus -----------------------------------------
 
 
-def test_seed_corpus_passes_all_controls() -> None:
+def test_seed_corpus_passes_all_controls(stage_arm_documents) -> None:
     assert _SEED_ROOT.is_dir(), "real seed corpus should be committed"
     for arm in ("grounded", "language_matched"):
         docs = dataset.load_arm_documents(_SEED_ROOT, arm)
         assert docs and all(d.text.strip() for d in docs)
 
 
-def test_load_corpus_via_path_returns_documents() -> None:
+def test_load_corpus_via_path_returns_documents(stage_arm_documents) -> None:
     corpus = load_corpus("grounded", path=str(_SEED_ROOT))
     assert corpus.name == "grounded"
     assert len(corpus.documents) >= 1
@@ -261,7 +277,7 @@ def test_subsample_draws_differ_and_full_pool_is_passthrough() -> None:
     assert len(dataset.subsample_documents(docs, arm="grounded", fraction=0.5, sample_seed=None)) == 16
 
 
-def test_load_arm_documents_subsamples_and_keeps_twin_valid() -> None:
+def test_load_arm_documents_subsamples_and_keeps_twin_valid(stage_arm_documents) -> None:
     full = dataset.load_arm_documents(_SEED_ROOT, "grounded")
     drawn = dataset.load_arm_documents(_SEED_ROOT, "grounded", sample_fraction=0.6, sample_seed=0)
     assert 0 < len(drawn) < len(full)  # a real subset
