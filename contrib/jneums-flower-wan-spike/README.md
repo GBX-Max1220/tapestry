@@ -191,7 +191,7 @@ first message includes ramp):
 ## Field re-run (2026-07-03, fresh box pair)
 
 Same topology rebuilt from scratch the same day: fresh Quebec (SuperLink) and Norway
-(SuperNode) vast.ai instances, same stack (flwr 1.32.1, grpcio 1.81.1, Python 3.12 venv),
+(SuperNode) vast.ai instances, same stack (flwr 1.32.1, grpcio 1.81.1, Python 3.14 venv),
 same vast Docker-NAT port mappings, measured path RTT ~101–107 ms, raw single-stream TCP
 215 Mbit/s (NO→QC) / 138 Mbit/s (QC→NO) — a faithful stand-in for the original pair.
 
@@ -230,7 +230,7 @@ Mbit/s). Conclusions:
 - If the SuperLink becomes unreachable, the SuperNode retries briefly and then **exits**
   rather than backing off indefinitely; node-side supervision (systemd restart or similar)
   is required for unattended sovereign nodes.
-- flwr ≥1.31 requires Python ≥3.11 (common GPU images still ship 3.10; `uv venv --python 3.12`
+- flwr ≥1.31 requires Python ≥3.11 (common GPU images still ship 3.10; `uv venv --python 3.14`
   is a quick fix).
 
 ## Reproducing
