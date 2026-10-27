@@ -21,7 +21,7 @@ Use this file as the fast path for orientation, navigation, and local convention
 - `website/` is the GitHub Pages site. It is the user-facing technical website.
 - `GITHUB_PAGES.md` describes the website that is published using GitHub Pages.
 - `Gemfile` and `Gemfile.lock` are used by Ruby for serving the GitHub Pages website locally.
-- `*.local/` (e.g., `ctn.local/`) is local workspace material and is intentionally excluded from repo-wide navigation guidance unless a task explicitly says otherwise.
+- `*.local/` (e.g., `tenxdev.local/`) is local workspace material and is intentionally excluded from repo-wide navigation guidance unless a task explicitly says otherwise.
 
 ## Where To Look First
 
@@ -191,4 +191,4 @@ Then add background, acceptance criteria, links to ADRs/issues, and checklists. 
 - Avoid broad refactors unless they are required to keep boundaries clear.
 - Prefer small, focused changes that stay inside the subsystem you are touching.
 - Treat `docs/` as the first stop for architecture, requirements, and design context.
-- For repo-wide navigation, ignore `*.local/` directories (e.g., `ctn.local/`) unless the task specifically asks for it.
+- For repo-wide navigation, ignore `*.local/` directories (e.g., `tenxdev.local/`) unless the task specifically asks for it.
