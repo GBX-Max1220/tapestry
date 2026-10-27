@@ -376,7 +376,4 @@ All activity here follows the [AI Alliance Code of Conduct](https://github.com/T
 
 ## Questions / Contacts
 
-Not sure if something fits? Do you want to discuss an idea before opening a PR? Start a [GitHub Discussion](https://github.com/The-AI-Alliance/tapestry/discussions) or reach out to the maintainers:
-
-- **Christopher Nguyen** ([@ctn](https://github.com/ctn))
-- **Dean Wampler** ([@deanwampler](https://github.com/deanwampler))
+Not sure if something fits? Do you want to discuss an idea before opening a PR? Please start a [GitHub Discussion](https://github.com/The-AI-Alliance/tapestry/discussions).

@@ -3,17 +3,17 @@
 
 # These owners will be the default owners for everything in
 # the repo. Unless a later, more-specific match in this file
-# takes precedence, @deanwampler and @ctn will be requested
-# to review a PR when it is opened.
-*          @deanwampler @ctn
+# takes precedence, @deanwampler will be requested to review
+# a PR when it is opened.
+*          @deanwampler
 
 # The following is redundant now, as "*" covers it, but we may add
 # additional reviewers for "docs" later.
-/docs/     @deanwampler @ctn
+/docs/     @deanwampler
 
 # Other locations:
-/src/      @deanwampler @ctn @jolson-allianceai
-/examples/ @deanwampler @ctn @jolson-allianceai
+/src/      @deanwampler @jolson-allianceai
+/examples/ @deanwampler @jolson-allianceai
 /website/  @deanwampler
 
 # Contributions:
