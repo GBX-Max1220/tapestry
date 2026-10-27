@@ -31,7 +31,7 @@ We follow normal _GitOps_ practices (see the top-level [`CONTRIBUTING.md`](../CO
 2. **Create your own subdirectory** under `contrib/`, named with your handle/org and a short topic, e.g.:
    - `contrib/jane-doe-cultural-eval/`
    - `contrib/acme-labs-federated-tuning/`
-3. **Add your contents** to that subdirectory. At minimum include:
+3. **Add your contents** to that subdirectory. The details are described in the next section. At minimum include:
    - A short `README.md` describing the idea, motivation, status, and how to use or evaluate it.
    - A `LICENSE` (or `LICENSE` reference) covering the contents — see [Licensing](#licensing) below.
 4. **Check the reviewer checklist** below before opening the pull request.
@@ -60,12 +60,12 @@ contrib/
 
 The files `.custom.mk` and `.targets.mk` are optional files that tie your contribution into the project-wide `make` processes. (Note the leading `.` in the names) They are _include_ files that will be read by the top-level `Makefile` and `.common.mk` files.
 
-There are two files because they play two different roles and they are loaded in two different ways. We discuss the details below, but briefly, here is how they are used:
+There are two files because they play two different roles and they are loaded in two different ways. We discuss the details below, but briefly, here is how they are used and what you need to know:
 
-* `.custom.mk` - Override the behaviors of common targets like `tests`, `format`, etc.
-* `.targets.mk` - Define targets for the contribution that will be visible in the top-level `make` process, such as commands to run the contribution's code.
+* `.custom.mk` - Used to override the behaviors of common targets like `tests`, `format`, etc.
+* `.targets.mk` - Used to define targets for the contribution that will be visible in the top-level `make` process, such as commands to run the contribution's code examples.
 
-You can find examples of these files in some of the `contrib/*` directories.
+You can find examples of these files in some of the `contrib/*` directories. In particular, see `contrib/jneums-cultural-cpt-validation` for a full example.
 
 Optionally, you can include your own `Makefile` for other "standalone" purposes that don't need exposure in the top-level processes. If useful, your `Makefile` can include `.common.mk` using a relative path to it:
 
@@ -73,9 +73,9 @@ Optionally, you can include your own `Makefile` for other "standalone" purposes 
 include ../../.common.mk
 ```
 
-Now lets discuss the quality enforcement and how to customize them using `.custom.mk`.
+Next, we will discuss the quality enforcement `make` targets and how to customize them using `.custom.mk`. Then, we will discuss defining custom targets for running your examples, if any.
 
-## Pass the Code Quality Enforcement
+### Understanding the Code Quality Enforcement Process
 
 The top-level `Makefile` has a target `before-pr`, which we ask everyone to run before opening a pull request.
 
@@ -97,8 +97,12 @@ All these targets are defined in the top-level `.common.mk` file.
 > [!WARNING]
 > The `format` target may modify your source code. Inspect those changes and commit them. If you think they are "wrong" in some way and the formatting should be changed globally for all source code, [post an issue](https://github.com/The-AI-Alliance/tapestry/issues). If you just want to disable the reformatting for your contribution, use the mechanisms described below.
 
-**_By default, these same targets are built for every contribution, too!_** However, since `contrib` contributions are not necessarily production quality, and we want to encourage such contributions with minimal "friction", a make "protocol" is provided to customize which quality checks are skipped. This is how `.custom.mk` is used.
+> [!NOTE]
+> There is a recently-added target `run-executables`, which is discussed in the next section on custom targets, that will be added to `before-pr` quality check when we decide it is stable enough for regular use.
 
+**_By default, these same quality targets are built for every contribution, too!_** However, since `contrib` contributions are not necessarily production quality, and we want to encourage such contributions with minimal "friction", we provide a _protocol_ to customize which quality checks are skipped. This is how `.custom.mk` is used.
+
+> [!TIP]
 > If you intend for your contribution to become part of the production code, it will eventually be necessary for all these quality enforcement targets to work successfully for your contribution, so we recommend making them work ASAP.
 
 Before discussing customization options, let's describe how you can build these quality `make` targets for your contribution, without running them for all code.
@@ -110,14 +114,14 @@ make before-pr-contrib  # Run all of the checks for all contrib/*
 make contrib-pylint     # Run just `pylint` for all contrib/*
 ```
 
-(Substitute `pylint` with any of the other quality checks mentioned above, as desired.)
+(Substitute `pylint` with any of the other quality check targets mentioned above, as desired.)
 To run checks for your contribution only, let's assume it is named `contrib/johndoe-foo`, then use the following command in the top-level directory to run all the quality targets:
 
 ```shell
-make SRC_DIR=contrib/johndoe-foo --include-dir=contrib/johndoe-foo format ruff pylint type-check tests
+make SRC_DIR=contrib/johndoe-foo SPEC_DIR=contrib/johndoe-foo --include-dir=contrib/johndoe-foo format ruff pylint type-check tests
 ```
 
-The `SRC_DIR=...` definition points to the contribution's directory so the quality targets run from there. The `--include-dir=...` argument is used to tell `make` to search in the same directory for include files, in our case, the customization file `.custom.mk`.
+The `SRC_DIR=...` and `SPEC_DIR=...` definitions point to the contribution's directory so the quality targets run from there. The `--include-dir=...` argument is used to tell `make` to search in the same directory for include files, in our case, the customization file `.custom.mk`.
 
 The `do-contrib-before-pr` target mentioned above also uses this command, running it once for each contribution. Similarly, the `contrib-x` targets also use this command, with the `x` target being one of the list of all the quality targets: `format ruff pylint type-check unit-tests`.
 
@@ -224,30 +228,41 @@ Recall from above that `SRC_DIR` will be defined to be `contrib/<you>-<your-cont
 
 The fourth customization mechanism uses a separate optional file, `.targets.mk`, in your contribution directory, where you can define custom targets that will be visible to the top-level `make` process. For example, you should consider adding targets to run demonstrations of your contribution. _Also add help messages for them, as mentioned above, in `.custom.mk`._
 
-Here is an example adapted from `contrib/jneums-consortium-experiment/.targets.mk`:
+Here is an example adapted from `contrib/jneums-cultural-cpt-validation/.targets.mk`:
 
 ```makefile
-.PHONY: consortium-experiment ...
+CULTURAL_CPT_DIR := contrib/jneums-cultural-cpt-validation
 
-CONSORTIUM_EXPERIMENT_DIR := contrib/jneums-consortium-experiment
+.PHONY: cultural-cpt-all cultural-cpt-validation cultural-cpt-aggregation cultural-cpt-stats cultural-cpt-tests cultural-cpt-fetch-seed cultural-cpt-validate-corpus
 
-consortium-experiment::
-  @echo "${INFO}Running the consortium-training experiment metrics...${_END}"
-  PYTHONPATH="${PWD}/${SRC_DIR}:${PWD}/${CONSORTIUM_EXPERIMENT_DIR}" uv run python ${CONSORTIUM_EXPERIMENT_DIR}/run.py
+executables:: cultural-cpt-all
+cultural-cpt-all:: cultural-cpt-validation cultural-cpt-aggregation cultural-cpt-stats cultural-cpt-tests cultural-cpt-fetch-seed cultural-cpt-validate-corpus
+
+cultural-cpt-validation::
+  @echo "${INFO} Running the EXP-001 cultural-CPT validation (smoke mode)... ${_END}"
+  PYTHONPATH="${PWD}/src:${PWD}/${CULTURAL_CPT_DIR}" \
+    uv run python ${CULTURAL_CPT_DIR}/run.py
 
 ...
 ```
 
-> [!NOTE]
-> These targets are meant to be built in the top-level directory, not the contribution's directory. Also, when they are built, `${SRC_DIR}`, if used, will refer to the production code's `src` directory. This is different from how this variable is defined when content in `.custom.mk` is used, where it will be defined to be the contribution's root directory. (Apologies for this confusing behavior...)
+There are several things to note in order to define `.targets.mk` correctly.
 
-> [!TIP]
-> * Run `make help-targets` and verify that no other contribution's targets have the same names you want to use. You must pick unique names, since all of them are visible at the top-level `make` invocation.
-> * Don't define targets for running your unit tests. They will be picked up automatically by the global `make unit-tests` command.
+1. `targets.mk` is loaded _globally_ by the repository's top-level `Makefile` (actually. `common.mk` does this). Hence, _all names have to be unique across the project_, including variable and target names. This loading happens in the context of the repository root directory, because the targets are meant to be invoked in the root directory.
+1. Because all the `.targets.mk` files are included in the top level `Makefile`, your `.targets.mk` file doesn't need to include the top level `.common.mk`. The definitions in `.common.mk` will be visible to it.
+1. The optional, convenience variable defined here, `CULTURAL_CPT_DIR`, is defined relative to the repository's root directory.
+1. Don't define targets for running your unit tests. They will be picked up automatically by the global `make unit-tests` command.
+1. The `executables` target is a global target already declared as `.PHONY`. Note that it just uses the `cultural-cpt-all` as a dependency to run all the targets. More details below.
 
-Because the `.targets.mk` files are included in the top level `Makefile`, the `.targets.mk` files don't need to include the top level `.common.mk`. The definitions in `.common.mk` will be visible to it.
+To be sure your target names are unique, run `make help-targets` in the top-level directory and verify that no other contributions have targets with the names you want to use. This is necessary since all of them are visible at the top-level `make` invocation.
 
-Once you have added one or more custom targets to a `.targets.mk`, verify they work by going to the project's top level directory and running `make my_target`, such as `make consortium-experiment` in the example just shown. Or, if the target takes a long time to run, try `make -n my_target` and verify that the correct commands that _would be run_ are printed out.
+Once you have added one or more custom targets to a `.targets.mk`, verify they work by going to the repository root directory and running `make my_target`, such as `make cultural-cpt-all` in the example. Or, if the target takes a long time to run, try `make -n my_target` and verify that the correct commands that _would be run_ are printed out.
+
+#### About the `executables` Target
+
+The definition shown above `executables:: cultural-cpt-all` (note the double colon, `::`) _adds_ `cultural-cpt-all` as a dependency for the global target, `executables`. This target supports the ability for users to run _all_ the example programs in `contrib` and the main `src` tree with one `make` command, `make run-executables`. Once we decide this is stable enough for use in automation, we will add this target to `before-pr`.
+
+In the example above, we simple add all the `cultural-cpt-*` targets to this global list. However, this assumes that all of them can run without special setup, as part of automation. If you have example targets that require special setup, for example, configuring an inference service, then don't include them as dependencies for `executables`. (Eventually, we will try to support such examples more seamlessly.)
 
 ## Reviewer-Friendly Checklist
 

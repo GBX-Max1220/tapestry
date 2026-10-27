@@ -8,6 +8,7 @@ TAPESTRY_MMLU_DIR ?= ${SOCIOCULTURAL_DIR}/results/mmlu
 
 .PHONY: sociocultural-all sociocultural-tests sociocultural-iw-verify sociocultural-iw-score sociocultural-iw-plot
 
+executables:: sociocultural-all
 sociocultural-all:: sociocultural-tests sociocultural-iw-verify
 
 sociocultural-tests::

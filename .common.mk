@@ -202,6 +202,9 @@ ${CODE}${_END}                        # Like ${CODE}before-pr-top${_END}, but wi
 ${CODE}make before-pr-contrib-no-tests${_END}
 ${CODE}${_END}                        # Like ${CODE}before-pr-contrib${_END}, but without ${CODE}unit-tests${_END}, for ${CODE}contrib/*${_END}.
 
+${CODE}make run-executables${_END}    # Experimental target that attempts to run all the executables listed by target ${CODE}help-targets${_END}.
+${CODE}make run-execs${_END}          # Alias for ${CODE}make run-executables${_END}.
+
 For contributed code in "contrib", any of the targets ${CODE}help${_END}, ${CODE}format${_END}, ${CODE}lint${_END}, ${CODE}ruff${_END}, ${CODE}pylint${_END},
 ${CODE}type-check${_END}, and ${CODE}type-check-watch${_END} can be invoked by prefixing the targets name with
 ${CODE}contrib-${_END}. This will run the corresponding target in all the ${CODE}contrib/*${_END} directories.
@@ -468,6 +471,9 @@ contrib-%::
 		${MAKE} SRC_DIR=$$d SPEC_DIR=$$d --include-dir=$$d ${@:contrib-%=%} || exit $$?; \
 	done 2>&1
 
+.PHONY: run-executables run-execs executables
+run-execs: run-executables
+run-executables:: executables
 
 # The following are really test targets for testing contrib-%, but they are
 # reasonably useful, e.g., using "make contrib-list" to list all the contrib/*

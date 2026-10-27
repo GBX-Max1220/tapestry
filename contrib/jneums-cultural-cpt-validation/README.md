@@ -117,7 +117,12 @@ make cultural-cpt-tests
 ```
 
 Or directly, e.g. `uv run python contrib/jneums-cultural-cpt-validation/run.py
---culture vietnam` (with `PYTHONPATH` set to `src` + this dir).
+--culture vietnam` (with `PYTHONPATH` set to `src` + this dir), which is made by the first target `cultural-cpt-validation`.
+
+See the two example data files (which are also used by `cultural-cpt-tests`):
+* `./data/seed-example/grounded.example.jsonl`
+* `./data/seed-example/language_matched.example.jsonl`
+
 
 ## Two experiments
 
