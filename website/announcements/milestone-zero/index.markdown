@@ -209,11 +209,11 @@ We welcome your help! See the [project README]({{site.repo_url}}){:target="repo"
 
 ---
 
-[^1]:  OLMo Team (2025). 2 OLMo 2 Furious. ([arXiv:2501.00656](https://arxiv.org/abs/2501.00656)) The team had done prior work with this model, which is why a comparable OLMo 3 model wasn’t used. For their purposes, using the most recent model wasn’t essential.
+[^1]:  OLMo Team (2025). 2 OLMo 2 Furious. ([arXiv:2501.00656](https://arxiv.org/abs/2501.00656){:target="arxiv"}) The team had done prior work with this model, which is why a comparable OLMo 3 model wasn’t used. For their purposes, using the most recent model wasn’t essential.
 
-[^2]:  Pham, V. T., Li, Z., Qu, L., and Haffari, G. (2025). *CultureInstruct: Curating Multi-Cultural Instructions at Scale.* In Proceedings of NAACL 2025\. ([PDF](https://aclanthology.org/2025.naacl-long.465.pdf), [dataset](https://drive.google.com/file/d/139oNuyEVdvprEIWUBuBd4BcBrWMwp0Hw/view?usp=sharing))
+[^2]:  Pham, V. T., Li, Z., Qu, L., and Haffari, G. (2025). *CultureInstruct: Curating Multi-Cultural Instructions at Scale.* In Proceedings of NAACL 2025\. ([PDF](https://aclanthology.org/2025.naacl-long.465.pdf){:target="paper"}, [dataset](https://drive.google.com/file/d/139oNuyEVdvprEIWUBuBd4BcBrWMwp0Hw/view?usp=sharing){:target="data"})
 
-[^3]:  Durmus, E. et al. (2023). *Towards Measuring the Representation of Subjective Global Opinions in Language Models.* ([arXiv:2306.16388](https://arxiv.org/abs/2306.16388))
+[^3]:  Durmus, E. et al. (2023). *Towards Measuring the Representation of Subjective Global Opinions in Language Models.* ([arXiv:2306.16388](https://arxiv.org/abs/2306.16388){:target="arxiv"})
 
 [^4]:  Two H200 GPUs (VRAM: 141 GB HBM3e apiece, Memory Bandwidth: 4.8 TB/s, Up to 1,671–1,979 TFlop/s per GPU) on the Indian side, versus two A100 GPUs (VRAM: 80 GB HBM apiece, Up to 312 TFlop/s per GPU). The Indian side had much higher network bandwidth, too.
 
